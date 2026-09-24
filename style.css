@@ -146,3 +146,4 @@ footer { color: var(--muted); font-size: 14px; padding-top: 32px; padding-bottom
   .timeline li { grid-template-columns: 1fr; gap: 4px; }
   .feature, .grid { grid-template-columns: 1fr; }
 }
+.card .links { margin-top: 8px; gap: 20px; }

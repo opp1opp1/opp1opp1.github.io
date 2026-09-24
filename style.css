@@ -119,8 +119,11 @@ h1 .en { font-size: 22px; font-weight: 400; color: var(--muted); margin-left: 8p
 .papers { list-style: none; margin: 0; padding: 0; }
 .papers li { padding: 12px 0; border-top: 1px solid var(--line); }
 .papers li:first-child { border-top: 0; }
-.papers a { font-weight: 500; margin-right: 12px; }
-.papers span { color: var(--muted); }
+.papers-note { color: var(--muted); font-size: 15px; }
+.papers li { display: flex; flex-direction: column; gap: 2px; }
+.papers a { font-weight: 500; }
+.papers span { color: var(--muted); font-size: 15px; }
+.papers .venue { font-size: 14px; }
 
 /* Skills */
 .skills { display: grid; gap: 24px; }

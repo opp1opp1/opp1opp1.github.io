@@ -7,7 +7,8 @@ import CaseDemo, { renderCase, CASE_DUR } from './CaseDemo.jsx';
 import Case2Demo, { renderCase2, CASE2_DUR } from './Case2Demo.jsx';
 import Case3Demo, { renderCase3, CASE3_DUR } from './Case3Demo.jsx';
 import Case4Demo, { renderCase4, CASE4_DUR } from './Case4Demo.jsx';
-import { Edge1Demo, SecDemo, FastDemo, AiDemo, renderG1, renderSec, renderFast, renderAi, G1_DUR, SEC_DUR, FAST_DUR, AI_DUR } from './EdgeDemos.jsx';
+import { Edge1Demo, SecDemo, AiDemo, renderG1, renderSec, renderAi, G1_DUR, SEC_DUR, AI_DUR } from './EdgeDemos.jsx';
+import FastStage from './FastStage.tsx';
 
 // 圖示一律來自同一套圖示庫(lucide),統一尺寸與線寬
 const CORE = [['前端', AppWindow], ['後端', Server]];
@@ -22,11 +23,12 @@ const RELEASES = [
 // 影片章節:id 對應 <section data-scene>,start 為開始秒數,dur 為長度
 // 只需要設定每章的長度,開始時間自動累加
 const DEFS = [
-  ['hero', '開場', 7], ['merge', '融合', 6],
-  ['edge', '優勢', 9], ['sec', '資安', 9], ['debug', '驗證', 13], ['fast', '交付', 10], ['ai', 'AI', 10],
-  ['user', '使用者視角', 6], ['case', '案例一', 31], ['case2', '案例二', 30],
-  ['case3', '案例三', 28], ['case4', '案例四', 29], ['stack', '延展', 7], ['notes', '版本', 4], ['cta', '結尾', 4],
+  ['hero', '開場', 9], ['merge', '融合', 8],
+  ['edge', '優勢', 11], ['sec', '資安', 11], ['debug', '驗證', 15], ['fast', '交付', 17], ['ai', 'AI', 13],
+  ['user', '使用者視角', 8], ['case', '案例一', 31], ['case2', '案例二', 30],
+  ['case3', '案例三', 30], ['case4', '案例四', 29], ['stack', '延展', 9], ['notes', '版本', 6], ['cta', '結尾', 4],
 ];
+const FAST_IDX = DEFS.findIndex(d => d[0] === 'fast');
 let acc = 0;
 const SCENES = DEFS.map(([id, label, dur]) => { const s = { id, label, start: acc, dur }; acc += dur; return s; });
 
@@ -78,7 +80,10 @@ function buildMaster(root) {
   });
   demoScene('edge', '[data-demo="edge1"]', renderG1, G1_DUR);
   demoScene('sec', '[data-demo="sec"]', renderSec, SEC_DUR);
-  demoScene('fast', '[data-demo="fast"]', renderFast, FAST_DUR);
+  scene('fast', tl => {
+    stagger(tl, '[data-scene="fast"] .head', 0.2, 0.15);
+    tl.fromTo('[data-scene="fast"] .gx', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.6);
+  });
   demoScene('ai', '[data-demo="ai"]', renderAi, AI_DUR);
 
   scene('debug', tl => {
@@ -159,6 +164,7 @@ export default function App() {
   const master = useRef(null);
   const idxRef = useRef(0);
   const [slide, setSlide] = useState(0);
+  const [run, setRun] = useState(0); // 每次換頁遞增,讓即時播放的畫面從頭開始
   const [playing, setPlaying] = useState(false);
   const [ended, setEnded] = useState(false);
 
@@ -170,7 +176,7 @@ export default function App() {
         const tt = m.time();
         let i = 0;
         SCENES.forEach((sc, k) => { if (tt >= sc.start - 0.001) i = k; });
-        if (i !== idxRef.current) { idxRef.current = i; setSlide(i); }
+        if (i !== idxRef.current) { idxRef.current = i; setSlide(i); setRun(n => n + 1); }
       });
       m.eventCallback('onComplete', () => { setPlaying(false); setEnded(true); });
       if (!reduceMotion()) { m.play(); setPlaying(true); }
@@ -189,6 +195,7 @@ export default function App() {
   const seek = useCallback((sec, keepState = false) => {
     const m = master.current;
     m.time(Math.min(Math.max(sec, 0), m.duration()));
+    setRun(n => n + 1);
     setEnded(m.progress() >= 1);
     if (!keepState) { m.play(); setPlaying(true); }
   }, []);
@@ -298,7 +305,7 @@ export default function App() {
             <p className="eyebrow head">我的優勢</p>
             <h2 className="head">更快把問題解決</h2>
             <p className="band-lead head">善用 AI 提高需求交付與問題處理的效率,把省下來的時間,拿去思考真正值得解決的問題。</p>
-            <div className="gx"><FastDemo /></div>
+            <div className="gx fs-wrap">{slide === FAST_IDX && <FastStage key={run} />}</div>
           </div>
         </section>
 

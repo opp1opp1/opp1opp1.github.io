@@ -76,36 +76,6 @@ export function SecDemo() {
   );
 }
 
-// ---------- 4. 交付效率:輸入單號,看到異常原因 ----------
-export const FAST_DUR = 8.5;
-const TYPED = 'PO-12345';
-
-export function renderFast(root, t) {
-  const $ = s => root.querySelector(s);
-  $('.e2-typed').textContent = TYPED.slice(0, Math.round(TYPED.length * ramp(t, 1.2, 2.6)));
-  const at = [3.2, 3.5, 3.8, 4.1, 4.4];
-  root.querySelectorAll('.e2-flow > *').forEach((p, i) => { p.style.opacity = ramp(t, at[i], at[i] + 0.3); });
-  $('.e2-flow .db').classList.toggle('hot', t >= 4.8 && t < 5.8);
-  $('.e2-wait').style.opacity = t >= 4.8 && t < 5.8 ? 1 : 0;
-  const res = $('.e2-result');
-  const ro = ramp(t, 5.8, 6.3);
-  res.style.opacity = ro; res.style.transform = `translateY(${(1 - ro) * 10}px)`;
-}
-
-export function FastDemo() {
-  return (
-    <div className="e2p wide" data-demo="fast" role="img" aria-label="示意:輸入單號,AI 透過 SKILL 在權限控制下查詢資料庫,直接看到異常原因">
-      <p className="e2-sub">寫了 SKILL,讓 AI 調用資料庫,並控制權限</p>
-      <div className="e2-input"><span>輸入單號</span><b className="e2-typed" /><i className="caret" /></div>
-      <div className="e2-flow">
-        <span className="fn">AI</span><i>→</i><span className="fn">SKILL</span><i>→</i><span className="fn db">資料庫<small>權限控制</small></span>
-      </div>
-      <p className="e2-wait">查詢中…</p>
-      <div className="e2-result"><small>異常原因(示意)</small>簽核停在第 2 關,等待主管回覆</div>
-    </div>
-  );
-}
-
 // ---------- 5. 懂得使用 AI:方向盤在我手上 ----------
 export const AI_DUR = 9.5;
 const STEPS_T = [1.0, 2.2, 3.4, 4.8, 6.0, 7.2];

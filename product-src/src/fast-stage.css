@@ -1,11 +1,7 @@
 /* 「貼對話給 AI 查狀況」:兩個視窗,左邊的對話貼邊出血,右邊的 AI 視窗壓在上面 */
 .fs .ss-stage { position: relative; }
-.fs .fs-chat { position: absolute; left: -26px; top: 50px; width: 360px; height: 330px; }
-.fs .fs-ai { position: absolute; left: 330px; top: 0; width: 460px; height: 372px; }
-.fs-chat-body { display: flex; flex-direction: column; gap: 9px; padding: 18px 20px 18px 44px; }
-.fs-msg { position: relative; align-self: flex-start; max-width: 246px; padding: 10px 14px; border-radius: 14px; background: var(--ss-raised, #fff); font-size: 14px; line-height: 1.55; box-shadow: 0 0 0 1px var(--ss-line, rgb(0 0 0 / .08)); }
-.fs-copy { position: absolute; right: -8px; top: -12px; padding: 3px 9px; border-radius: 999px; background: var(--ss-ink, #111); color: var(--ss-surface, #fff); font-size: 12px; line-height: 1.4; opacity: 0; transition: opacity .18s; }
-.fs-msg[data-hover] .fs-copy, .fs-copy[data-hover] { opacity: 1; }
+.fs .fs-chat { position: absolute; left: -22px; top: 44px; width: 440px; height: 336px; }
+.fs .fs-ai { position: absolute; left: 392px; top: 0; width: 392px; height: 372px; }
 .fs-ai-body { display: flex; flex-direction: column; height: 100%; padding: 14px 18px 16px; gap: 12px; }
 .fs-thread { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; overflow: hidden; }
 .fs-q { align-self: flex-end; max-width: 86%; padding: 9px 14px; border-radius: 14px; background: var(--ss-accent-soft, rgb(31 94 255 / .1)); font-size: 14px; line-height: 1.55; }
@@ -17,15 +13,13 @@
 .fs-tool-state[data-done] { color: var(--ss-accent, #1f5eff); }
 .fs-a { font-size: 15px; line-height: 1.7; font-weight: 500; }
 .fs-stream { word-spacing: -0.3em; }
-.fs .fs-toast { position: absolute; left: 90px; top: 320px; }
+.fs .fs-toast { position: absolute; left: 110px; top: 316px; }
 .fs-wrap { max-width: 960px; margin: 8px auto 0; }
 
 /* 手機(compact)版:上下疊,不是把寬版縮小 */
 .fs .ss-stage[data-layout="compact"] .fs-chat { left: -16px; top: 10px; width: 300px; height: 210px; }
 .fs .ss-stage[data-layout="compact"] .fs-ai { left: 34px; top: 176px; width: 340px; height: 294px; }
-.fs .ss-stage[data-layout="compact"] .fs-chat-body { padding: 14px 16px 14px 34px; }
-.fs .ss-stage[data-layout="compact"] .fs-msg { max-width: 220px; }
-.fs .ss-stage[data-layout="compact"] .fs-toast { left: 70px; top: 150px; }
+.fs .ss-stage[data-layout="compact"] .fs .ss-stage[data-layout="compact"] .fs .ss-stage[data-layout="compact"] .fs-toast { left: 70px; top: 150px; }
 .fs .ss-stage[data-layout="compact"] .fs-q { font-size: 13px; }
 .fs .ss-stage[data-layout="compact"] .fs-a { font-size: 14px; }
 
@@ -41,3 +35,41 @@
 .fs .ss-stage[data-layout="compact"] .fs-chat { height: 200px; }
 /* 內容變多時,較早的訊息往上捲出視窗:頂端淡出,不是硬切 */
 .fs-thread { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30px); mask-image: linear-gradient(to bottom, transparent 0, #000 30px); }
+
+/* ---------- 職場通訊軟體(Slack 式):側欄、訊息列、滑過才出現的工具列、更多選單 ---------- */
+.fs-side { display: flex; flex-direction: column; gap: 2px; padding: 12px 8px; }
+.fs-side-row { display: flex; align-items: center; gap: 7px; min-height: 28px; padding: 0 8px; border-radius: 7px; color: var(--ss-ink-3, #888); font-size: 13px; }
+.fs-side-row[data-active] { background: var(--ss-accent-soft, rgb(31 94 255 / .1)); color: var(--ss-accent, #1f5eff); font-weight: 500; }
+.fs-feed { display: flex; flex-direction: column; gap: 4px; padding: 14px 8px 10px 12px; }
+.fs-row { position: relative; display: flex; gap: 10px; padding: 8px 10px; border-radius: 8px; transition: background .15s; }
+.fs-row[data-hover], .fs-row[data-menu] { background: color-mix(in srgb, var(--ss-ink-3, #888) 10%, transparent); }
+.fs-older { opacity: .8; }
+.fs-older-av { flex: none; width: 34px; height: 34px; border-radius: 8px; background: color-mix(in srgb, var(--ss-ink-3, #888) 25%, transparent); }
+.fs-mbody { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fs-meta { display: flex; align-items: baseline; gap: 8px; }
+.fs-name { font-weight: 600; font-size: 14px; }
+.fs-time { color: var(--ss-ink-3, #888); font-size: 12px; }
+.fs-text { font-size: 14px; line-height: 1.55; }
+.fs-hover { position: absolute; right: 8px; top: -14px; display: flex; gap: 1px; padding: 3px; border-radius: 8px; background: var(--ss-raised, #fff); box-shadow: 0 0 0 1px var(--ss-line, rgb(0 0 0 / .1)), 0 3px 10px rgb(0 0 0 / .08); opacity: 0; transition: opacity .15s; }
+.fs-row[data-hover] .fs-hover, .fs-row[data-menu] .fs-hover { opacity: 1; }
+.fs-hbtn { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; color: var(--ss-ink-2, #555); }
+.fs-hbtn[data-hover] { background: color-mix(in srgb, var(--ss-ink-3, #888) 18%, transparent); }
+.fs-menu { position: absolute; right: 4px; top: 20px; z-index: 5; width: 150px; padding: 5px; border-radius: 10px; background: var(--ss-raised, #fff); box-shadow: 0 0 0 1px var(--ss-line, rgb(0 0 0 / .1)), 0 10px 28px rgb(0 0 0 / .16); opacity: 0; transform: translateY(-4px) scale(.98); transform-origin: top right; pointer-events: none; transition: opacity .15s, transform .15s; }
+.fs-menu[data-open] { opacity: 1; transform: none; }
+.fs-menu-item { display: flex; align-items: center; min-height: 28px; padding: 0 9px; border-radius: 6px; font-size: 13.5px; }
+.fs-menu-item[data-hover] { background: var(--ss-accent, #1f5eff); color: #fff; }
+.fs-chat-compose { position: absolute; left: 12px; right: 12px; bottom: 12px; padding: 10px 12px; border-radius: 9px; box-shadow: 0 0 0 1px var(--ss-line, rgb(0 0 0 / .14)); background: var(--ss-raised, #fff); }
+.fs-chat-ph { color: var(--ss-ink-3, #888); font-size: 13.5px; }
+.fs .ss-stage[data-layout="compact"] .fs-chat { left: -16px; top: 10px; width: 330px; height: 214px; }
+.fs .ss-stage[data-layout="compact"] .fs-ai { left: 34px; top: 176px; width: 340px; height: 384px; }
+.fs .ss-stage[data-layout="compact"] .fs-toast { left: 80px; top: 120px; }
+.fs .ss-stage[data-layout="compact"] .fs-menu { top: 14px; }
+.fs .ss-stage[data-layout="compact"] .fs-feed { padding-top: 10px; }
+
+/* 訊息與工具列要落在 AI 視窗之前,不被蓋住 */
+.fs-feed .fs-row { max-width: 286px; }
+.fs-text { max-width: 204px; }
+.fs .ss-stage[data-layout="compact"] .fs-older { display: none; }
+.fs .ss-stage[data-layout="compact"] .fs-feed .fs-row { max-width: 270px; }
+.fs .ss-stage[data-layout="compact"] .fs-text { max-width: 190px; }
+.fs .ss-stage[data-layout="compact"] .fs-hover { top: -18px; }

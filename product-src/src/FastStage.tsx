@@ -1,4 +1,5 @@
-import { Bar, Collapse, Field, Stage, Stream, Text, Toast, Window, type Act } from './kit';
+import { Bookmark, EllipsisVertical, Forward, Hash, MessageSquareText, Plus, SmilePlus } from 'lucide-react';
+import { Avatar, Bar, Collapse, Field, Stage, Stream, Text, Toast, Window, type Act } from './kit';
 import { useSiteTheme } from './useSiteTheme.js';
 import './fast-stage.css';
 
@@ -14,6 +15,7 @@ const ANSWER = '單據 PO-12345 停在第 2 關簽核,主管尚未回覆。'.spl
 const WORDS = ANSWER.split(' ').length;
 
 type S = {
+  menu: boolean; // 訊息的「更多」選單
   copied: boolean;
   draft: string;
   sent: boolean;
@@ -24,15 +26,18 @@ type S = {
   hit: boolean; // 命中那一筆
   words: number;
 };
-const initial: S = { copied: false, draft: '', sent: false, phase: 'idle', db: false, auth: false, scan: -1, hit: false, words: 0 };
+const initial: S = { menu: false, copied: false, draft: '', sent: false, phase: 'idle', db: false, auth: false, scan: -1, hit: false, words: 0 };
 const poster: S = { ...initial, sent: true, phase: 'answer', words: WORDS };
 
 async function script(a: Act<S>) {
   await a.wait(600);
-  await a.move('msg'); // 滑到訊息上,才會出現「複製」
-  await a.wait(250);
-  await a.click('copy');
-  a.put({ copied: true });
+  await a.move('msg'); // 滑到訊息上,才會出現工具列
+  await a.wait(350);
+  await a.click('more'); // 工具列的「更多」
+  a.put({ menu: true });
+  await a.wait(450);
+  await a.click('copy'); // 複製文字
+  a.put({ menu: false, copied: true });
   await a.wait(900);
   a.put({ copied: false });
   await a.click('composer');
@@ -67,6 +72,31 @@ async function script(a: Act<S>) {
   await a.wait(3200);
 }
 
+function ChatSidebar() {
+  // 職場通訊軟體的側欄:真實文字只有目前頻道,其餘為灰色佔位
+  return (
+    <div className="fs-side">
+      <div className="fs-side-row"><Bar w={52} h={7} r={4} tone={2} /></div>
+      <div className="fs-side-row"><Hash size={13} strokeWidth={1.75} /><Bar w={44} h={6} r={3} tone={2} /></div>
+      <div className="fs-side-row" data-active><Hash size={13} strokeWidth={1.75} /><Text>採購問題</Text></div>
+      <div className="fs-side-row"><Hash size={13} strokeWidth={1.75} /><Bar w={58} h={6} r={3} tone={2} /></div>
+      <div className="fs-side-row"><Plus size={13} strokeWidth={1.75} /><Bar w={40} h={6} r={3} tone={2} /></div>
+    </div>
+  );
+}
+
+function OlderRow({ w }: { w: number[] }) {
+  return (
+    <div className="fs-row fs-older">
+      <span className="fs-older-av" />
+      <div className="fs-mbody">
+        <Bar w={62} h={7} r={4} tone={3} />
+        {w.map((x, i) => <Bar key={i} w={x} h={6} r={3} tone={2} />)}
+      </div>
+    </div>
+  );
+}
+
 export default function FastStage() {
   const theme = useSiteTheme();
   return (
@@ -85,17 +115,36 @@ export default function FastStage() {
       cursor={{ at: 'msg', style: 'arrow' }}
       className="fs"
     >
-      {(s) => (
+      {(s, _rect, layout) => (
         <>
-          <Window title="對話" className="fs-chat">
-            <div className="fs-chat-body">
-              <Bar w={96} h={8} r={4} tone={2} />
-              <Bar w={170} h={8} r={4} tone={2} />
-              <div className="fs-msg" data-target="msg" data-cursor="pointer">
-                <Text wrap>{MSG}</Text>
-                <span className="fs-copy" data-target="copy" data-cursor="pointer">複製</span>
+          <Window title="# 採購問題" className="fs-chat" sidebar={layout === 'compact' ? undefined : <ChatSidebar />} sidebarWidth={112}>
+            <div className="fs-feed">
+              <OlderRow w={[150, 96]} />
+              <OlderRow w={[120]} />
+              <div className="fs-row" data-target="msg" data-cursor="default" data-menu={s.menu || undefined}>
+                <Avatar name="林" size={34} />
+                <div className="fs-mbody">
+                  <div className="fs-meta">
+                    <Text className="fs-name">小林</Text>
+                    <Text className="fs-time">10:42</Text>
+                  </div>
+                  <Text wrap className="fs-text">{MSG}</Text>
+                </div>
+                <div className="fs-hover">
+                  <span className="fs-hbtn"><SmilePlus size={15} strokeWidth={1.75} /></span>
+                  <span className="fs-hbtn"><MessageSquareText size={15} strokeWidth={1.75} /></span>
+                  <span className="fs-hbtn"><Forward size={15} strokeWidth={1.75} /></span>
+                  <span className="fs-hbtn"><Bookmark size={15} strokeWidth={1.75} /></span>
+                  <span className="fs-hbtn" data-target="more" data-cursor="pointer"><EllipsisVertical size={15} strokeWidth={1.75} /></span>
+                </div>
+                <div className="fs-menu" data-open={s.menu || undefined}>
+                  <span className="fs-menu-item"><Bar w={70} h={6} r={3} tone={2} /></span>
+                  <span className="fs-menu-item" data-target="copy" data-cursor="pointer">複製文字</span>
+                  <span className="fs-menu-item"><Bar w={54} h={6} r={3} tone={2} /></span>
+                </div>
               </div>
             </div>
+            <div className="fs-chat-compose"><Text className="fs-chat-ph">傳訊息到 # 採購問題</Text></div>
           </Window>
 
           <Window title="AI" className="fs-ai">

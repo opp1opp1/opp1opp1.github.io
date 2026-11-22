@@ -632,3 +632,7 @@ h2.big, .hero-title { font-weight: 900; }
   .dotn { width: 6px; height: 6px; } .dotn.on { width: 14px; }
   .pbtn.ghost { width: 28px; height: 28px; }
 }
+@media (max-width: 760px) {
+  .stage [data-scene="e2e"] .eyebrow, .stage [data-scene="skill"] .eyebrow, .stage [data-scene="fast"] .eyebrow { display: none; }
+  .stage [data-scene="e2e"] h2, .stage [data-scene="skill"] h2, .stage [data-scene="fast"] h2 { font-size: 20px; }
+}

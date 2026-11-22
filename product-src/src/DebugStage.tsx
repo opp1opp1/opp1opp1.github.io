@@ -1,20 +1,10 @@
-import { Bar, Camera, Caret, Code, Prompt, Stage, Text, Window, type Act, type CodeLine, type Rect } from './kit';
+import { Bar, Camera, Code, Stage, Text, Window, type Act, type CodeLine, type Rect } from './kit';
 import { useSiteTheme } from './useSiteTheme.js';
 import './debug-stage.css';
 
-// 示意:用 API 工具重現問題、看回應定位原因;再請 AI 寫並執行 E2E 測試,用綠燈驗證。
-// 網址、欄位、測試名稱與耗時皆為範例,不是真實系統。
+// 示意:用 API 工具重現問題、看回應定位原因。網址與欄位皆為範例,不是真實系統。
 
 const URL_TEXT = 'https://api.example.com/v1/orders/10086';
-const CMD = 'npx playwright test';
-const TESTS: [string, number][] = [
-  ['建立請購單', 820],
-  ['送出簽核流程', 1340],
-  ['供應商回覆報價', 1105],
-  ['驗收並入庫', 960],
-  ['付款狀態更新', 1480],
-];
-
 const BAD: CodeLine[] = [
   { text: '{' },
   { text: '  "code": 500,' },
@@ -33,15 +23,10 @@ const OK: CodeLine[] = [
 type S = {
   status: 'idle' | 'wait' | 'bad' | 'ok';
   zoom: Rect | null; // 鏡頭推近的位置(舞台座標)
-  termFront: boolean; // 終端機走到前面,Postman 退後
-  cmd: string;
-  running: number; // 正在跑第幾個測試(-1 = 沒有)
-  done: number; // 已通過幾個
-  summary: boolean;
 };
-const initial: S = { status: 'idle', zoom: null, termFront: false, cmd: '', running: -1, done: 0, summary: false };
-// 減少動態效果時直接顯示結果:測試全部通過
-const poster: S = { ...initial, status: 'ok', termFront: true, cmd: CMD, done: TESTS.length, summary: true };
+const initial: S = { status: 'idle', zoom: null };
+// 減少動態效果時直接顯示結果:修正後的 200
+const poster: S = { status: 'ok', zoom: null };
 
 async function script(a: Act<S>) {
   await a.wait(600);
@@ -61,21 +46,7 @@ async function script(a: Act<S>) {
   a.put({ status: 'wait' });
   await a.wait(650);
   a.put({ status: 'ok' });
-  await a.wait(1500);
-  // 4. 換請 AI 寫的 E2E 測試:終端機走到前面,逐一通過
-  a.put({ termFront: true });
-  await a.wait(600);
-  await a.type('cmd', CMD, { interval: 38 });
-  await a.wait(350);
-  for (let i = 0; i < TESTS.length; i++) {
-    a.put({ running: i });
-    await a.wait(480);
-    a.put({ running: -1, done: i + 1 });
-    await a.wait(170);
-  }
-  await a.wait(300);
-  a.put({ summary: true });
-  await a.wait(3600);
+  await a.wait(3800);
 }
 
 export default function DebugStage() {
@@ -84,7 +55,7 @@ export default function DebugStage() {
     <Stage
       width={760}
       height={380}
-      compact={{ below: 560, width: 358, height: 520 }}
+      compact={{ below: 560, width: 358, height: 340 }}
       initial={initial}
       poster={poster}
       script={script}
@@ -93,12 +64,12 @@ export default function DebugStage() {
       theme={theme}
       accent={theme === 'dark' ? '#6d9bff' : '#1f5eff'}
       tokens={{ '--ss-font': '"Noto Sans TC", system-ui, sans-serif' }}
-      cursor={{ at: { wide: { x: 300, y: 250 }, compact: { x: 240, y: 200 } }, style: 'arrow', ripple: true }}
+      cursor={{ at: { wide: { x: 420, y: 260 }, compact: { x: 240, y: 200 } }, style: 'arrow', ripple: true }}
       className="db"
     >
       {(s) => (
         <Camera focus={s.zoom} pad={40} max={1.7}>
-          <Window title="API 測試" className="db-pm" receded={s.termFront}>
+          <Window title="API 測試" className="db-pm">
             <div className="db-body">
               <div className="db-req">
                 <span className="db-method">GET</span>
@@ -121,25 +92,6 @@ export default function DebugStage() {
             </div>
           </Window>
 
-          <Window chrome="terminal" title="app — zsh" className="db-term" receded={!s.termFront}>
-            <Prompt path="~/app">
-              {s.cmd}
-              {s.done < TESTS.length && <Caret still={s.cmd.length > 0 && s.cmd !== CMD} />}
-            </Prompt>
-            <div className="db-tests">
-              {TESTS.map(([name, ms], i) => {
-                const st = i < s.done ? 'done' : i === s.running ? 'run' : 'idle';
-                return (
-                  <div className="db-test" key={name} data-state={st}>
-                    <span className="db-mark" />
-                    <span className="db-name">{name}</span>
-                    <span className="db-ms">{st === 'done' ? `${ms} ms` : ''}</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="ok db-sum" data-show={s.summary || undefined}>5 passed (12.4s)</div>
-          </Window>
         </Camera>
       )}
     </Stage>

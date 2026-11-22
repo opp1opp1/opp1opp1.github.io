@@ -9,6 +9,7 @@ import { Edge1Demo, SecDemo, AiDemo, renderG1, renderSec, renderAi, G1_DUR, SEC_
 import FastStage from './FastStage.tsx';
 import SkillStage from './SkillStage.tsx';
 import DebugStage from './DebugStage.tsx';
+import E2eStage from './E2eStage.tsx';
 
 // 圖示一律來自同一套圖示庫(lucide),統一尺寸與線寬
 const CORE = [['前端', AppWindow], ['後端', Server]];
@@ -24,13 +25,14 @@ const RELEASES = [
 // 只需要設定每章的長度,開始時間自動累加
 const DEFS = [
   ['hero', '開場', 9], ['merge', '融合', 8],
-  ['edge', '優勢', 11], ['sec', '資安', 11], ['debug', '驗證', 26], ['skill', 'SKILL', 15], ['fast', '交付', 22], ['ai', 'AI', 13],
+  ['edge', '優勢', 11], ['sec', '資安', 11], ['debug', '驗證', 15], ['e2e', 'E2E', 21], ['skill', 'SKILL', 15], ['fast', '交付', 22], ['ai', 'AI', 13],
   ['user', '使用者視角', 8], ['case', '案例一', 31], ['case2', '案例二', 30],
   ['case3', '案例三', 30], ['case4', '案例四', 29], ['stack', '延展', 9], ['notes', '版本', 6], ['cta', '結尾', 4],
 ];
 const FAST_IDX = DEFS.findIndex(d => d[0] === 'fast');
 const SKILL_IDX = DEFS.findIndex(d => d[0] === 'skill');
 const DEBUG_IDX = DEFS.findIndex(d => d[0] === 'debug');
+const E2E_IDX = DEFS.findIndex(d => d[0] === 'e2e');
 let acc = 0;
 const SCENES = DEFS.map(([id, label, dur]) => { const s = { id, label, start: acc, dur }; acc += dur; return s; });
 
@@ -82,6 +84,10 @@ function buildMaster(root) {
   });
   demoScene('edge', '[data-demo="edge1"]', renderG1, G1_DUR);
   demoScene('sec', '[data-demo="sec"]', renderSec, SEC_DUR);
+  scene('e2e', tl => {
+    stagger(tl, '[data-scene="e2e"] .head', 0.2, 0.15);
+    tl.fromTo('[data-scene="e2e"] .gx', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.6);
+  });
   scene('skill', tl => {
     stagger(tl, '[data-scene="skill"] .head', 0.2, 0.15);
     tl.fromTo('[data-scene="skill"] .gx', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.6);
@@ -302,8 +308,17 @@ export default function App() {
           <div className="in">
             <p className="eyebrow head">我的優勢</p>
             <h2 className="head">出問題,自己查得到</h2>
-            <p className="band-lead head">看 Log、F12、Postman 逐步縮小範圍;用 AI 開發,也請 AI 寫測試、跑 E2E,用結果說話。</p>
+            <p className="band-lead head">看 Log、F12、Postman,一步步縮小範圍,找到真正的原因。</p>
             <div className="gx fs-wrap">{slide === DEBUG_IDX && <DebugStage key={run} />}</div>
+          </div>
+        </section>
+
+        <section className="scene" data-scene="e2e">
+          <div className="in">
+            <p className="eyebrow head">我的優勢</p>
+            <h2 className="head">測試全部通過,不代表沒問題</h2>
+            <p className="band-lead head">測試全過、上線卻出問題,這種事很常見。所以我讓 AI 實際把程式跑起來、取得登入狀態,操作它剛改的部分。</p>
+            <div className="gx fs-wrap">{slide === E2E_IDX && <E2eStage key={run} />}</div>
           </div>
         </section>
 

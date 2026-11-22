@@ -4,10 +4,10 @@ export const CASE3_DUR = 26;
 
 // 範例資料:系統名稱、commit 內容、工時皆為示意,非真實紀錄
 const PAINS = [
-  ['手動填寫,每天都要花時間', 1.6],
-  ['忘記填,事後補填花更久,甚至要 0.5~1 小時', 3.0],
-  ['系統沒有 API,session 過期還會無限迴圈', 4.4],
-  ['不少動作要等 1~2 秒才有回應', 5.8],
+  ['手動填寫,每天都要花時間', 1.2],
+  ['忘記填,事後補填花更久,甚至要 0.5~1 小時', 2.2],
+  ['系統沒有 API,session 過期還會無限迴圈', 3.2],
+  ['不少動作要等 1~2 秒才有回應', 5.2],
 ];
 const COMMITS = [
   ['系統 A', 'fix: 修正付款狀態判斷', 8.2],
@@ -59,6 +59,21 @@ export function renderCase3(root, t) {
     li.style.opacity = ramp(t, PAINS[i][1], PAINS[i][1] + 0.35);
     li.style.transform = `translateX(${(1 - ramp(t, PAINS[i][1], PAINS[i][1] + 0.35)) * -10}px)`;
   });
+  // session 過期的無限迴圈:載入中 → 已過期 → 重試,次數不斷增加
+  const ex = $('.c3-expire');
+  const EX0 = 3.4, CYC = 1.2;
+  const exOn = t >= EX0 && t < 7.4;
+  ex.style.display = exOn ? '' : 'none';
+  if (exOn) {
+    const k = (t - EX0) / CYC;
+    const ph = k - Math.floor(k);
+    ex.style.opacity = ramp(t, EX0, EX0 + 0.3);
+    ex.querySelector('.sp').style.transform = `rotate(${t * 540}deg)`;
+    ex.querySelector('.sp').style.opacity = ph < 0.55 ? 1 : 0.25;
+    ex.querySelector('.ex-msg').textContent = ph < 0.55 ? '載入中…' : '⚠ Session 已過期,重新整理…';
+    ex.querySelector('.ex-msg').className = 'ex-msg' + (ph < 0.55 ? '' : ' bad');
+    ex.querySelector('.ex-n').textContent = '重試第 ' + (Math.floor(k) + 1) + ' 次';
+  }
   const status = $('.c3-status');
   status.style.opacity = t >= 14.2 && t < 21.8 ? ramp(t, 14.2, 14.6) : 0;
   const say = $('.c3-say');
@@ -118,6 +133,11 @@ export default function Case3Demo() {
             <svg className="c3-cursor" width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 1l13 7-6 1.6L6.6 16z" fill="#4fd1c1" stroke="#06231f" strokeWidth="1.2" strokeLinejoin="round" /></svg>
           </div>
           <p className="c3-total">合計 8.0 小時 · 已送出 ✓</p>
+          <div className="c3-expire" style={{ display: 'none' }}>
+            <span className="sp" />
+            <p className="ex-msg">載入中…</p>
+            <p className="ex-n">重試第 1 次</p>
+          </div>
         </div>
 
         <div className="c3-gen" style={{ display: 'none' }}>

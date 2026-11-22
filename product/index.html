@@ -18,8 +18,7 @@
     <nav>
       <a href="#edge">優勢</a>
       <a href="#user">使用者視角</a>
-      <a href="#cases">案例</a>
-      <a href="#spec">規格</a>
+      <a href="#stack">延展</a>
       <a href="../">履歷版 →</a>
     </nav>
   </header>
@@ -47,30 +46,46 @@
       </div>
     </section>
 
-    <!-- Compare -->
+    <!-- Advantages -->
     <section class="compare band">
-      <h2 class="reveal">我的競爭優勢</h2>
-      <p class="band-lead reveal">和兩種常見的選擇比較。</p>
+      <h2 class="reveal">我的優勢</h2>
+      <p class="band-lead reveal">不只會寫程式,更懂程式是為了誰而寫。</p>
       <div class="cards">
         <article class="pcard reveal">
-          <p class="tag">對比 · 自學 Vibe Coding 的開發者</p>
-          <h3>我知道企業內部怎麼運作</h3>
-          <ul>
-            <li>理解採購、驗收、招標、付款這些流程為什麼長這樣</li>
-            <li>具備資安常識,知道哪些資料不該送出去、哪些權限不能開</li>
-            <li>出問題時<strong>自己會查</strong>:看 Log、F12 開發者工具、Postman 等方式除錯,不是只把錯誤訊息丟回給 AI</li>
-            <li>用 AI 開發,也請 AI 寫測試、指示它跑 E2E 測試,<strong>用測試驗證結果</strong>,而不是憑感覺</li>
-          </ul>
+          <p class="tag">01 · 企業脈絡</p>
+          <h3>懂企業內部怎麼運作</h3>
+          <p>採購、驗收、招標、付款,這些流程為什麼長這樣,我都待在第一線看過、改過。需求還沒說完,我大概就知道背後的原因。</p>
         </article>
         <article class="pcard reveal">
-          <p class="tag">對比 · 尚未使用 AI 的工程師</p>
-          <h3>我交付得更快</h3>
-          <ul>
-            <li>善用 AI 提高需求交付與問題處理的效率</li>
-            <li>遇到不熟的技術,先研究、再實作,不被技術棧限制</li>
-            <li>Vue.js、LangChain 都是工作中自學上手,並實際做成專案</li>
-          </ul>
+          <p class="tag">02 · 資安意識</p>
+          <h3>知道什麼該守住</h3>
+          <p>哪些資料不該送出去、哪些權限不能開,這些常識讓我在享受 AI 速度的同時,也能守住企業的底線。</p>
         </article>
+        <article class="pcard reveal">
+          <p class="tag">03 · 除錯與驗證</p>
+          <h3>出問題,自己查得到</h3>
+          <p>看 Log、F12 開發者工具、Postman 逐步縮小範圍。用 AI 開發,也請 AI 寫測試、指示它跑 E2E 測試,用結果說話,而不是憑感覺。</p>
+        </article>
+        <article class="pcard reveal">
+          <p class="tag">04 · 交付效率</p>
+          <h3>更快把問題解決</h3>
+          <p>善用 AI 提高需求交付與問題處理的效率,把省下來的時間,拿去思考真正值得解決的問題。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Before / After -->
+    <section class="ba" id="stack">
+      <div class="ba-stage">
+        <p class="ba-label"><span class="l-before">BEFORE</span><span class="l-after">AFTER</span></p>
+        <ul class="ba-chips" aria-label="過去累積的技術">
+          <li>.NET</li><li>ASP.NET MVC</li><li>jQuery</li><li>Oracle</li><li>Python</li><li>Vue.js</li><li>LangChain</li>
+        </ul>
+        <div class="ba-after">
+          <p class="ba-big grad">任何你需要的技術</p>
+          <p class="ba-with">WITH&nbsp;AI</p>
+        </div>
+        <p class="ba-caption">技術棧是起點,不是邊界。</p>
       </div>
     </section>
 
@@ -83,56 +98,10 @@
         <ul class="roles reveal">
           <li>採購</li><li>物流</li><li>物管</li><li>會計</li><li>……</li>
         </ul>
-        <div class="vs">
-          <div class="vs-col dim reveal">
-            <p class="tag">常見做法</p>
-            <p>頭痛醫頭、腳痛醫腳<br>只處理眼前的那一個問題</p>
-          </div>
-          <div class="vs-col hl reveal">
-            <p class="tag">我的做法</p>
-            <p>先弄懂對方真正想完成什麼<br>再一起找出根本的解法</p>
-          </div>
+        <div class="vs reveal">
+          <p class="tag">我的做法</p>
+          <p class="flow"><span>先弄懂對方真正想完成什麼</span><i aria-hidden="true">→</i><span class="grad">一起找出根本的解法</span></p>
         </div>
-      </div>
-    </section>
-
-    <!-- Cases -->
-    <section class="cases band" id="cases">
-      <h2 class="reveal">實際案例</h2>
-      <p class="band-lead reveal">這些都是在企業環境裡真的跑起來的東西。</p>
-      <div class="cases-grid">
-        <article class="pcard reveal">
-          <p class="tag">AI · 採購</p>
-          <h3>AI 智能 PO 分類</h3>
-          <p>根據過去的採購單自動判斷分類,用 Flowise 與 Langfuse 建置,可記錄 log 與 token 用量。</p>
-          <p class="stat"><span class="count" data-to="130000">0</span><small>筆舊 PO 完成分類</small></p>
-        </article>
-        <article class="pcard reveal">
-          <p class="tag">AI · 議價</p>
-          <h3>比議價 AI 輔能</h3>
-          <p>輸入單號就能取得單據與附件、解析報價單並產生議價建議。臨時接手,從零開始學 Vue.js 繼續開發。</p>
-        </article>
-        <article class="pcard reveal">
-          <p class="tag">AI · 主管</p>
-          <h3>採購戰情室 AI 助手</h3>
-          <p>讓主管用對話查資料、跨表比對,不必再面對繁瑣的條件操作。</p>
-        </article>
-        <article class="pcard reveal">
-          <p class="tag">平台 · 創收</p>
-          <h3>SRM 創收專案</h3>
-          <p>負責第一年上線:強化功能、實作付費 AI 功能,並處理付款與未付款的功能限制。</p>
-        </article>
-        <article class="pcard reveal">
-          <p class="tag">平台 · 物流</p>
-          <h3>LSM 報關平台</h3>
-          <p>進口資料以 OCR 自動整理,透過 FTP 交給報關行;我負責報關功能、AWS EC2 架構與報表。</p>
-        </article>
-        <article class="pcard reveal">
-          <p class="tag">Side project</p>
-          <h3>台灣新聞觀點平衡器</h3>
-          <p>把同一話題在不同媒體的報導整理在一起。用 Gemini CLI 開發,部署在 Vercel。</p>
-          <p><a href="https://news-balance-tw.vercel.app/">開啟網站 ↗</a></p>
-        </article>
       </div>
     </section>
 
@@ -144,18 +113,6 @@
         <li class="reveal"><span class="ver">v2.0</span><div><h3>資訊管理碩士(加密貨幣研究)</h3><p>國立中正大學 · 2021 – 2023 · 國際會議與期刊發表</p></div></li>
         <li class="reveal"><span class="ver">v1.0</span><div><h3>資訊管理學士(數位內容科技組)</h3><p>國立彰化師範大學 · 2016 – 2021</p></div></li>
       </ol>
-    </section>
-
-    <!-- Spec -->
-    <section class="spec band" id="spec">
-      <h2 class="reveal">技術規格</h2>
-      <dl class="specs reveal">
-        <div><dt>後端</dt><dd>ASP.NET MVC / .NET Core · Python</dd></div>
-        <div><dt>前端</dt><dd>Vue.js · jQuery</dd></div>
-        <div><dt>資料庫</dt><dd>Oracle SQL · PostgreSQL</dd></div>
-        <div><dt>AI</dt><dd>LangChain / LangGraph · Flowise · Prompt Engineering</dd></div>
-        <div><dt>語言</dt><dd>中文 · 台語 · 英文(TOEIC 820)</dd></div>
-      </dl>
     </section>
 
     <!-- CTA -->

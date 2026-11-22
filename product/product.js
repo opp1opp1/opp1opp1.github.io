@@ -9,11 +9,6 @@ addEventListener('pointermove', e => {
   glow.style.setProperty('--y', e.clientY + 'px');
 });
 
-// count-up fallback: show final value if animation can't run
-const counts = document.querySelectorAll('.count');
-const fmt = n => Math.round(n).toLocaleString('en-US');
-counts.forEach(el => { el.textContent = fmt(+el.dataset.to); });
-
 if (!reduce && window.gsap && window.ScrollTrigger) {
   gsap.registerPlugin(ScrollTrigger);
 
@@ -40,10 +35,16 @@ if (!reduce && window.gsap && window.ScrollTrigger) {
       scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
   });
 
-  // count-up
-  counts.forEach(el => {
-    const o = { v: 0 };
-    ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () =>
-      gsap.to(o, { v: +el.dataset.to, duration: 1.8, ease: 'power2.out', onUpdate: () => el.textContent = fmt(o.v) }) });
+  // BEFORE -> AFTER (pinned, scrubbed)
+  const ba = gsap.timeline({
+    scrollTrigger: { trigger: '.ba', start: 'top top', end: '+=130%', scrub: .6, pin: true }
   });
+  gsap.set('.ba-chips li', { opacity: 0, y: 20 });
+  ba.to('.ba-chips li', { opacity: 1, y: 0, stagger: .08, duration: .4 })
+    .to({}, { duration: .5 })
+    .to('.ba-chips li', { opacity: 0, filter: 'blur(10px)', scale: .6, y: -30, stagger: { each: .06, from: 'random' }, duration: .5 })
+    .to('.l-before', { opacity: 0, duration: .3 }, '<')
+    .to('.l-after', { opacity: 1, duration: .3 }, '<+=.3')
+    .fromTo('.ba-after', { opacity: 0, scale: .85, filter: 'blur(14px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .8 }, '<')
+    .to('.ba-caption', { opacity: 1, y: -10, duration: .5 });
 }

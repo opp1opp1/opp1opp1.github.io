@@ -6,14 +6,8 @@ import CaseDemo, { renderCase, CASE_DUR } from './CaseDemo.jsx';
 import Case2Demo, { renderCase2, CASE2_DUR } from './Case2Demo.jsx';
 import Case3Demo, { renderCase3, CASE3_DUR } from './Case3Demo.jsx';
 import Case4Demo, { renderCase4, CASE4_DUR } from './Case4Demo.jsx';
-import Edge2Demo, { renderEdge2, EDGE2_DUR } from './Edge2Demo.jsx';
+import { Edge1Demo, SecDemo, FastDemo, AiDemo, renderG1, renderSec, renderFast, renderAi, G1_DUR, SEC_DUR, FAST_DUR, AI_DUR } from './EdgeDemos.jsx';
 
-const ADVANTAGES = [
-  ['01 · 企業脈絡', '知道系統不是一個人的事', '在企業裡開發系統,要開通防火牆、聯絡 DBA、通過資安弱掃、部署到 IIS 或 K8S,每一關都有人、有規範。我知道該找誰、照什麼流程走,讓系統不只做得出來,還能安全上線。'],
-  ['02 · 資安意識', '知道什麼該守住', '哪些資料不該送出去、哪些權限不能開,這些常識讓我在享受 AI 速度的同時,也能守住企業的底線。'],
-  ['03 · 除錯與驗證', '出問題,自己查得到', '看 Log、F12 開發者工具、Postman 逐步縮小範圍。用 AI 開發,也請 AI 寫測試、指示它跑 E2E 測試,用結果說話,而不是憑感覺。'],
-  ['04 · 交付效率', '更快把問題解決', '善用 AI 提高需求交付與問題處理的效率,把省下來的時間,拿去思考真正值得解決的問題。'],
-];
 const STACK_ICONS = [
   ['前端', '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M6.5 6.5h.01"/>'],
   ['後端', '<rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/>'],
@@ -32,8 +26,9 @@ const RELEASES = [
 // 影片章節:id 對應 <section data-scene>,start 為開始秒數,dur 為長度
 // 只需要設定每章的長度,開始時間自動累加
 const DEFS = [
-  ['hero', '開場', 7], ['merge', '融合', 6], ['edge', '優勢', 8], ['edge2', '底線', 15],
-  ['debug', '驗證', 13], ['user', '使用者視角', 6], ['case', '案例一', 31], ['case2', '案例二', 30],
+  ['hero', '開場', 7], ['merge', '融合', 6],
+  ['edge', '優勢', 9], ['sec', '資安', 9], ['debug', '驗證', 13], ['fast', '交付', 10], ['ai', 'AI', 10],
+  ['user', '使用者視角', 6], ['case', '案例一', 31], ['case2', '案例二', 30],
   ['case3', '案例三', 28], ['case4', '案例四', 29], ['stack', '延展', 7], ['notes', '版本', 4], ['cta', '結尾', 4],
 ];
 let acc = 0;
@@ -62,8 +57,10 @@ function buildMaster(root) {
   scene('hero', tl => {
     tl.from(qa('.split'), { yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: 0.15 }, 0.2);
     stagger(tl, '.hero .fx', 0.9, 0.15, 20);
-    tl.fromTo(qa('.si'), { y: 24, opacity: 0, scale: 0.7 }, { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: 'back.out(2.2)', stagger: 0.2 }, 3.0)
-      .fromTo('.si-note', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7 }, 4.7);
+    tl.fromTo(qa('.si-core'), { y: 24, opacity: 0, scale: 0.7 }, { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: 'back.out(2.2)', stagger: 0.2 }, 2.8)
+      .fromTo('.si-extra', { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.6 }, 3.5)
+      .fromTo(qa('.si-ext'), { y: 18, opacity: 0, scale: 0.7 }, { y: 0, opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2.2)', stagger: 0.18 }, 3.8)
+      .fromTo('.si-note', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7 }, 5.0);
   });
 
   scene('merge', tl => {
@@ -75,19 +72,19 @@ function buildMaster(root) {
       .to('.merge-caption', { opacity: 1, y: -10, duration: 0.6 }, 4);
   });
 
-  scene('edge', tl => {
-    stagger(tl, '[data-scene="edge"] .head', 0.3, 0.15);
-    stagger(tl, '[data-scene="edge"] .pcard', 1.2, 0.5, 30);
-  });
-
-  scene('edge2', tl => {
-    stagger(tl, '[data-scene="edge2"] .head', 0.2, 0.15);
-    const el = q('[data-demo="edge2"]');
+  // 「我的優勢」的四頁小動畫:標題浮現 → 動畫依時間播放
+  const demoScene = (id, sel, render, dur, delay = 1.0) => scene(id, tl => {
+    stagger(tl, `[data-scene="${id}"] .head`, 0.2, 0.15);
+    const el = q(sel);
     const o = { t: 0 };
-    renderEdge2(el, 0);
-    tl.fromTo('[data-scene="edge2"] .e2p', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15 }, 0.8)
-      .to(o, { t: EDGE2_DUR, duration: EDGE2_DUR, ease: 'none', onUpdate: () => renderEdge2(el, o.t) }, 1.0);
+    render(el, 0);
+    tl.fromTo(`[data-scene="${id}"] .gx`, { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.8)
+      .to(o, { t: dur, duration: dur, ease: 'none', onUpdate: () => render(el, o.t) }, delay);
   });
+  demoScene('edge', '[data-demo="edge1"]', renderG1, G1_DUR);
+  demoScene('sec', '[data-demo="sec"]', renderSec, SEC_DUR);
+  demoScene('fast', '[data-demo="fast"]', renderFast, FAST_DUR);
+  demoScene('ai', '[data-demo="ai"]', renderAi, AI_DUR);
 
   scene('debug', tl => {
     stagger(tl, '[data-scene="debug"] .head', 0.3, 0.15);
@@ -241,15 +238,24 @@ export default function App() {
           </h1>
           <p className="hero-sub fx">一位懂企業怎麼運作,也懂怎麼用 AI 的工程師。</p>
           <p className="hero-name fx">謝博旭 Bosh Shieh · 全端工程師</p>
-          <ul className="si-row" aria-label="全端涵蓋的範圍">
-            {STACK_ICONS.map(([label, d]) => (
-              <li className="si" key={label}>
+          <div className="si-row" aria-label="全端涵蓋的範圍">
+            {STACK_ICONS.slice(0, 2).map(([label, d]) => (
+              <div className="si si-core" key={label}>
                 <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML={{ __html: d }} />
                 <span>{label}</span>
-              </li>
+              </div>
             ))}
-          </ul>
-          <p className="si-note">從畫面到資料庫、雲端、網路與資安,需要時都能自己處理。</p>
+            <div className="si-extra">
+              <span className="si-tag">延伸範圍</span>
+              {STACK_ICONS.slice(2).map(([label, d]) => (
+                <div className="si si-ext" key={label}>
+                  <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML={{ __html: d }} />
+                  <span>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <p className="si-note">核心是前端與後端;資料庫、雲端、網路與資安這些延伸範圍,需要時我也能自己處理。</p>
         </section>
 
         <section className="scene merge" data-scene="merge">
@@ -263,32 +269,49 @@ export default function App() {
 
         <section className="scene" data-scene="edge">
           <div className="in">
-            <h2 className="head">我的優勢</h2>
-            <p className="band-lead head">不只會寫程式,更懂程式是為了誰而寫。</p>
-            <div className="cards">
-              {ADVANTAGES.map(([tag, title, text]) => (
-                <article className="pcard" key={tag}><p className="tag">{tag}</p><h3>{title}</h3><p>{text}</p></article>
-              ))}
-            </div>
+            <p className="eyebrow head">我的優勢 · 1 / 5</p>
+            <h2 className="head">知道系統不是一個人的事</h2>
+            <p className="band-lead head">在企業裡開發系統,每一關都有人、有規範。我知道該找誰、照什麼流程走,讓系統不只做得出來,還能安全上線。</p>
+            <div className="gx"><Edge1Demo /></div>
           </div>
         </section>
 
-        <section className="scene" data-scene="edge2">
+        <section className="scene" data-scene="sec">
           <div className="in">
-            <p className="eyebrow head">我的優勢</p>
-            <h2 className="head">守住底線,也跑得更快。</h2>
-            <Edge2Demo />
+            <p className="eyebrow head">我的優勢 · 2 / 5</p>
+            <h2 className="head">知道什麼該守住</h2>
+            <p className="band-lead head">哪些資料不該送出去、哪些權限不能開,讓我在享受 AI 速度的同時,也能守住企業的底線。</p>
+            <div className="gx"><SecDemo /></div>
           </div>
         </section>
 
         <section className="scene" data-scene="debug">
           <div className="in">
-            <p className="eyebrow head">除錯與驗證</p>
-            <h2 className="head">問題要查得到,結果要驗得過。</h2>
+            <p className="eyebrow head">我的優勢 · 3 / 5</p>
+            <h2 className="head">出問題,自己查得到</h2>
+            <p className="band-lead head">看 Log、F12、Postman 逐步縮小範圍;用 AI 開發,也請 AI 寫測試、跑 E2E,用結果說話。</p>
             <div className="demos">
               <div className="demo"><PostmanDemo /><p className="demo-cap">用 API 工具重現問題,看回應定位原因</p></div>
               <div className="demo"><E2EDemo /><p className="demo-cap">請 AI 寫測試、跑 E2E,用綠燈驗證</p></div>
             </div>
+          </div>
+        </section>
+
+        <section className="scene" data-scene="fast">
+          <div className="in">
+            <p className="eyebrow head">我的優勢 · 4 / 5</p>
+            <h2 className="head">更快把問題解決</h2>
+            <p className="band-lead head">善用 AI 提高需求交付與問題處理的效率,把省下來的時間,拿去思考真正值得解決的問題。</p>
+            <div className="gx"><FastDemo /></div>
+          </div>
+        </section>
+
+        <section className="scene" data-scene="ai">
+          <div className="in">
+            <p className="eyebrow head">我的優勢 · 5 / 5</p>
+            <h2 className="head">懂得使用 AI</h2>
+            <p className="band-lead head">AI 是加速器,不是拐杖。我負責拆解需求、給足脈絡、審查與把關,讓 AI 去做重複又費時的部分。</p>
+            <div className="gx"><AiDemo /></div>
           </div>
         </section>
 

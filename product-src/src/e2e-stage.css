@@ -1,0 +1,41 @@
+/* 左:AI 的作業紀錄(逐列完成);右:真的在跑的程式畫面,由 AI 的游標操作 */
+.ev .ev-log { position: absolute; left: -22px; top: 40px; width: 322px; height: 330px; }
+.ev .ev-app { position: absolute; left: 308px; top: 8px; width: 462px; height: 366px; }
+.ev-rows { padding: 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+.ev-row { display: grid; grid-template-columns: 1.4ch 1fr; grid-template-areas: "m l" ". t"; column-gap: 1.2ch; row-gap: 2px; align-items: baseline; color: var(--ss-text-faint); font-size: 13.5px; }
+.ev-mark { grid-area: m; font-family: ui-monospace, "SF Mono", monospace; }
+.ev-mark::before { content: '·'; }
+.ev-label { grid-area: l; }
+.ev-tag { grid-area: t; font-size: 12px; color: var(--ss-text-faint); }
+.ev-row[data-state="run"] { color: var(--ss-text-strong); }
+.ev-row[data-state="run"] .ev-mark::before { content: '⠋'; animation: ev-spin .8s steps(1) infinite; color: var(--ss-accent); }
+.ev-row[data-state="done"] { color: var(--ss-text-strong); }
+.ev-row[data-state="done"] .ev-mark::before { content: '✓'; color: var(--ss-success-text); }
+.ev-row[data-state="bad"] { color: var(--ss-danger-text); font-weight: 600; }
+.ev-row[data-state="bad"] .ev-mark::before { content: '✕'; }
+.ev-row[data-state="bad"] .ev-tag { color: var(--ss-danger-text); }
+@keyframes ev-spin { 0% { content: '⠋'; } 12% { content: '⠙'; } 25% { content: '⠹'; } 37% { content: '⠸'; } 50% { content: '⠼'; } 62% { content: '⠴'; } 75% { content: '⠦'; } 87% { content: '⠧'; } }
+.ev-login, .ev-form, .ev-result { padding: 28px 32px; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.ev-h { font-size: 17px; font-weight: 600; }
+.ev-btn { padding: 8px 20px; border-radius: 8px; background: var(--ss-accent); color: #fff; font-weight: 600; font-size: 14px; }
+.ev-btn--off { background: color-mix(in srgb, var(--ss-text-faint) 30%, transparent); color: var(--ss-text-faint); }
+.ev-btn[data-pressed] { transform: scale(.95); }
+.ev-field { display: flex; align-items: center; gap: 14px; position: relative; }
+.ev-flabel { font-size: 13.5px; width: 52px; }
+.ev-select { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 190px; height: 32px; padding: 0 12px; border-radius: 8px; box-shadow: 0 0 0 1px var(--ss-line); background: var(--ss-raised); font-size: 14px; }
+.ev-caret { color: var(--ss-text-faint); font-size: 12px; }
+.ev-menu { position: absolute; left: 0; top: 38px; z-index: 6; width: 100%; padding: 4px; border-radius: 9px; background: var(--ss-raised); box-shadow: 0 0 0 1px var(--ss-line), 0 10px 26px rgb(0 0 0 / .16); opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .15s, transform .15s; }
+.ev-menu[data-open] { opacity: 1; transform: none; }
+.ev-opt { display: flex; align-items: center; min-height: 28px; padding: 0 9px; border-radius: 6px; font-size: 13.5px; }
+.ev-opt[data-hover] { background: var(--ss-accent); color: #fff; }
+.ev-kv { display: flex; align-items: center; gap: 14px; min-height: 30px; padding: 0 10px; border-radius: 8px; width: 330px; }
+.ev-kv--bad { gap: 22px; }
+.ev-kv--bad[data-bad] { background: var(--ss-danger-soft); }
+.ev-k { font-size: 13.5px; width: 52px; }
+.ev-v { font-size: 14px; font-weight: 600; }
+.ev-kv--bad[data-bad] .ev-v { color: var(--ss-danger-text); }
+/* 手機:上下疊 */
+.ev .ss-stage[data-layout="compact"] .ev-log { left: -12px; top: 8px; width: 382px; height: 226px; }
+.ev .ss-stage[data-layout="compact"] .ev-app { left: 18px; top: 212px; width: 350px; height: 340px; }
+.ev .ss-stage[data-layout="compact"] .ev-login, .ev .ss-stage[data-layout="compact"] .ev-form, .ev .ss-stage[data-layout="compact"] .ev-result { padding: 18px 20px; gap: 10px; }
+.ev .ss-stage[data-layout="compact"] .ev-kv { width: 280px; }

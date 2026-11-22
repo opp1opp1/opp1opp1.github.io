@@ -1,6 +1,5 @@
 /* Postman 風格的 API 工具(左,貼邊)+ 終端機(右)。同時間只有一個在前面 */
-.db .db-pm { position: absolute; left: -22px; top: 26px; width: 410px; height: 340px; }
-.db .db-term { position: absolute; left: 400px; top: 62px; width: 376px; height: 312px; }
+.db .db-pm { position: absolute; left: 30px; top: 30px; width: 740px; height: 350px; }
 .db-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
 .db-req { display: flex; align-items: center; gap: 8px; }
 .db-method { padding: 6px 11px; border-radius: 7px; background: var(--ss-success-soft); color: var(--ss-success-text); font-weight: 600; font-size: 13px; }
@@ -15,19 +14,6 @@
 .db-status[data-tone="ok"] { color: var(--ss-success-text); }
 .db-status[data-tone="wait"] { color: var(--ss-text-faint); }
 .db-resp { min-height: 150px; font-size: 13px; }
-/* 終端機:字元格,標記與文字同寬;每行自己換標記 */
-.db-tests { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; font-size: 13px; }
-.db-test { display: grid; grid-template-columns: 1.4ch 1fr auto; gap: 1.2ch; align-items: baseline; color: var(--ss-term-dim, #8b93a1); }
-.db-mark::before { content: '·'; }
-.db-test[data-state="run"] { color: var(--ss-term-fg, inherit); }
-.db-test[data-state="run"] .db-mark::before { content: '⠋'; animation: db-spin .8s steps(1) infinite; }
-.db-test[data-state="done"] { color: var(--ss-term-fg, inherit); }
-.db-test[data-state="done"] .db-mark::before { content: '✓'; color: var(--ss-term-ok, #4fd18b); }
-.db-ms { color: var(--ss-term-dim, #8b93a1); font-size: 12px; }
-@keyframes db-spin { 0% { content: '⠋'; } 12% { content: '⠙'; } 25% { content: '⠹'; } 37% { content: '⠸'; } 50% { content: '⠼'; } 62% { content: '⠴'; } 75% { content: '⠦'; } 87% { content: '⠧'; } }
-.db-sum { margin-top: 12px; font-size: 13px; font-weight: 600; opacity: 0; transition: opacity .3s; }
-.db-sum[data-show] { opacity: 1; }
-/* 手機:上下疊 */
-.db .ss-stage[data-layout="compact"] .db-pm { left: -12px; top: 8px; width: 382px; height: 262px; }
-.db .ss-stage[data-layout="compact"] .db-term { left: 24px; top: 226px; width: 346px; height: 294px; }
-.db .ss-stage[data-layout="compact"] .db-resp { min-height: 96px; }
+/* 手機 */
+.db .ss-stage[data-layout="compact"] .db-pm { left: -12px; top: 8px; width: 382px; height: 320px; }
+.db .ss-stage[data-layout="compact"] .db-resp { min-height: 120px; }

@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useRef, useState, useEffect, useCallback } from 'react';
 import { gsap, reduceMotion, fmt } from './motion.js';
+import { AppWindow, Server, Database, Cloud, Network, ShieldCheck } from 'lucide-react';
 import PostmanDemo, { renderPostman, POSTMAN_DUR } from './PostmanDemo.jsx';
 import E2EDemo, { renderE2E, E2E_DUR } from './E2EDemo.jsx';
 import CaseDemo, { renderCase, CASE_DUR } from './CaseDemo.jsx';
@@ -8,14 +9,9 @@ import Case3Demo, { renderCase3, CASE3_DUR } from './Case3Demo.jsx';
 import Case4Demo, { renderCase4, CASE4_DUR } from './Case4Demo.jsx';
 import { Edge1Demo, SecDemo, FastDemo, AiDemo, renderG1, renderSec, renderFast, renderAi, G1_DUR, SEC_DUR, FAST_DUR, AI_DUR } from './EdgeDemos.jsx';
 
-const STACK_ICONS = [
-  ['前端', '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M6.5 6.5h.01"/>'],
-  ['後端', '<rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/>'],
-  ['資料庫', '<ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'],
-  ['雲端', '<path d="M7 18a4 4 0 010-8 5.5 5.5 0 0110.6 1.5A3.3 3.3 0 0117 18z"/>'],
-  ['網路', '<circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M11 7l-5 9M13 7l5 9M7.2 18h9.6"/>'],
-  ['資安', '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'],
-];
+// 圖示一律來自同一套圖示庫(lucide),統一尺寸與線寬
+const CORE = [['前端', AppWindow], ['後端', Server]];
+const EXT = [['資料庫', Database], ['雲端', Cloud], ['網路', Network], ['資安', ShieldCheck]];
 const STACK = ['.NET', 'ASP.NET MVC', 'jQuery', 'Oracle', 'Python', 'Vue.js', 'LangChain'];
 const RELEASES = [
   ['v3.0', 'MIS 系統開發工程師', '群創光電 · 2023/8 – 現在 · 2025/12 起轉向物流領域'],
@@ -198,27 +194,20 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const move = e => {
-      const g = root.current.querySelector('.glow');
-      g.style.setProperty('--x', e.clientX + 'px'); g.style.setProperty('--y', e.clientY + 'px');
-    };
     const key = e => {
       const tag = e.target.tagName;
       if (e.code === 'Space' && tag !== 'BUTTON' && tag !== 'A') { e.preventDefault(); toggle(); }
       if (e.code === 'ArrowRight') seek(master.current.time() + 5, true);
       if (e.code === 'ArrowLeft') seek(master.current.time() - 5, true);
     };
-    addEventListener('pointermove', move);
     addEventListener('keydown', key);
-    return () => { removeEventListener('pointermove', move); removeEventListener('keydown', key); };
+    return () => { removeEventListener('keydown', key); };
   }, [toggle, seek]);
 
   const onStageClick = e => { if (!e.target.closest('a,button')) toggle(); };
 
   return (
     <div ref={root}>
-      <div className="glow" aria-hidden="true" />
-
       <header className="nav">
         <button className="brand" onClick={() => seek(0)}>謝博旭</button>
         <nav>
@@ -231,7 +220,6 @@ export default function App() {
 
       <main className="stage" onClick={onStageClick}>
         <section className="scene hero" data-scene="hero">
-          <p className="eyebrow fx">Introducing</p>
           <h1 className="hero-title">
             <span className="line"><span className="split">傳統的穩</span></span>
             <span className="line"><span className="split grad">現代的快</span></span>
@@ -239,19 +227,13 @@ export default function App() {
           <p className="hero-sub fx">一位懂企業怎麼運作,也懂怎麼用 AI 的工程師。</p>
           <p className="hero-name fx">謝博旭 Bosh Shieh · 全端工程師</p>
           <div className="si-row" aria-label="全端涵蓋的範圍">
-            {STACK_ICONS.slice(0, 2).map(([label, d]) => (
-              <div className="si si-core" key={label}>
-                <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML={{ __html: d }} />
-                <span>{label}</span>
-              </div>
+            {CORE.map(([label, Icon]) => (
+              <div className="si si-core" key={label}><Icon size={26} strokeWidth={1.6} aria-hidden="true" /><span>{label}</span></div>
             ))}
             <div className="si-extra">
               <span className="si-tag">延伸範圍</span>
-              {STACK_ICONS.slice(2).map(([label, d]) => (
-                <div className="si si-ext" key={label}>
-                  <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML={{ __html: d }} />
-                  <span>{label}</span>
-                </div>
+              {EXT.map(([label, Icon]) => (
+                <div className="si si-ext" key={label}><Icon size={26} strokeWidth={1.6} aria-hidden="true" /><span>{label}</span></div>
               ))}
             </div>
           </div>
@@ -269,7 +251,7 @@ export default function App() {
 
         <section className="scene" data-scene="edge">
           <div className="in">
-            <p className="eyebrow head">我的優勢 · 1 / 5</p>
+            <p className="eyebrow head">我的優勢</p>
             <h2 className="head">知道系統不是一個人的事</h2>
             <p className="band-lead head">在企業裡開發系統,每一關都有人、有規範。我知道該找誰、照什麼流程走,讓系統不只做得出來,還能安全上線。</p>
             <div className="gx"><Edge1Demo /></div>
@@ -278,7 +260,7 @@ export default function App() {
 
         <section className="scene" data-scene="sec">
           <div className="in">
-            <p className="eyebrow head">我的優勢 · 2 / 5</p>
+            <p className="eyebrow head">我的優勢</p>
             <h2 className="head">知道什麼該守住</h2>
             <p className="band-lead head">哪些資料不該送出去、哪些權限不能開,讓我在享受 AI 速度的同時,也能守住企業的底線。</p>
             <div className="gx"><SecDemo /></div>
@@ -287,7 +269,7 @@ export default function App() {
 
         <section className="scene" data-scene="debug">
           <div className="in">
-            <p className="eyebrow head">我的優勢 · 3 / 5</p>
+            <p className="eyebrow head">我的優勢</p>
             <h2 className="head">出問題,自己查得到</h2>
             <p className="band-lead head">看 Log、F12、Postman 逐步縮小範圍;用 AI 開發,也請 AI 寫測試、跑 E2E,用結果說話。</p>
             <div className="demos">
@@ -299,7 +281,7 @@ export default function App() {
 
         <section className="scene" data-scene="fast">
           <div className="in">
-            <p className="eyebrow head">我的優勢 · 4 / 5</p>
+            <p className="eyebrow head">我的優勢</p>
             <h2 className="head">更快把問題解決</h2>
             <p className="band-lead head">善用 AI 提高需求交付與問題處理的效率,把省下來的時間,拿去思考真正值得解決的問題。</p>
             <div className="gx"><FastDemo /></div>
@@ -308,7 +290,7 @@ export default function App() {
 
         <section className="scene" data-scene="ai">
           <div className="in">
-            <p className="eyebrow head">我的優勢 · 5 / 5</p>
+            <p className="eyebrow head">我的優勢</p>
             <h2 className="head">懂得使用 AI</h2>
             <p className="band-lead head">AI 是加速器,不是拐杖。我負責拆解需求、給足脈絡、審查與把關,讓 AI 去做重複又費時的部分。</p>
             <div className="gx"><AiDemo /></div>

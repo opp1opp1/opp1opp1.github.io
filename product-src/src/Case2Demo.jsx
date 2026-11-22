@@ -68,7 +68,7 @@ export function renderCase2(root, t) {
     const start = parseFloat(l.dataset.at);
     l.style.display = t >= start ? '' : 'none';
     l.style.opacity = ramp(t, start, start + 0.3);
-    if (l.classList.contains('key')) l.style.backgroundColor = `rgba(245,192,79,${0.2 * ramp(t, 8.0, 8.4)})`;
+    if (l.classList.contains('key')) l.style.backgroundColor = `color-mix(in srgb, var(--warn) ${Math.round(22 * ramp(t, 8.0, 8.4))}%, transparent)`;
   });
   dev.querySelectorAll('.cmp tbody tr').forEach((r, i) => {
     const start = COMPARE[i][4];

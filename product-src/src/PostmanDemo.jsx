@@ -1,4 +1,5 @@
 import React from 'react';
+import { MousePointer2 } from 'lucide-react';
 
 export const URL_TEXT = 'https://api.example.com/v1/orders/10086';
 export const POSTMAN_DUR = 10;
@@ -13,6 +14,20 @@ export function renderPostman(root, t) {
   $('.pm-url-text').textContent = URL_TEXT.slice(0, Math.round(URL_TEXT.length * ramp(t, 0, 1.6)));
   const sc = 1 - 0.08 * pulse(t, 1.9) - 0.08 * pulse(t, 6.1);
   $('.pm-send').style.transform = `scale(${sc})`;
+
+  // 游標:移到 Send、按下、移開;再按一次。每個動作都有原因
+  const wr = root.getBoundingClientRect();
+  const k = wr.width / root.offsetWidth || 1;
+  const sr = $('.pm-send').getBoundingClientRect();
+  const sx = (sr.left - wr.left + sr.width / 2) / k, sy = (sr.top - wr.top + sr.height / 2) / k;
+  const rx = root.offsetWidth * 0.72, ry = root.offsetHeight * 0.78;
+  const share = ramp(t, 0.8, 1.8) - ramp(t, 2.3, 3.0) + ramp(t, 5.2, 6.0) - ramp(t, 6.6, 7.3);
+  const cur = $('.pm-cursor');
+  cur.style.opacity = ramp(t, 0.5, 0.9);
+  cur.style.transform = `translate(${rx + (sx - rx) * share}px, ${ry + (sy - ry) * share}px)`;
+  // 鏡頭:在錯誤那幾行上推近,再拉回
+  const cam = ramp(t, 3.6, 4.4) - ramp(t, 5.6, 6.2);
+  $('.pm-body').style.transform = `scale(${1 + 0.1 * cam})`;
 
   const bad = t >= 2.8 && t < 6.2;
   const ok = t >= 6.8;
@@ -30,7 +45,7 @@ export function renderPostman(root, t) {
     l.style.display = show ? '' : 'none';
     const start = set === 'bad' ? 2.8 : 6.8;
     l.style.opacity = show ? ramp(t, start + i * 0.09, start + i * 0.09 + 0.3) : 0;
-    l.style.backgroundColor = l.classList.contains('err') && bad ? `rgba(255,107,107,${0.22 * ramp(t, 3.7, 4.1)})` : '';
+    l.style.backgroundColor = l.classList.contains('err') && bad ? `color-mix(in srgb, var(--bad) ${Math.round(24 * ramp(t, 3.7, 4.1))}%, transparent)` : '';
   });
 
   const n1 = ramp(t, 4.1, 4.5) * (t < 6.1 ? 1 : 0);
@@ -50,7 +65,7 @@ export default function PostmanDemo() {
         <span className="pm-url"><span className="pm-url-text">{URL_TEXT}</span></span>
         <span className="pm-send">Send</span>
       </div>
-      <div className="pm-tabs"><span>Params</span><span>Headers</span><span className="on">Body</span><span>Tests</span>
+      <div className="pm-tabs"><span className="bar" /><span className="bar" /><span className="on">Body</span><span className="bar" />
         <b className="pm-status wait" />
       </div>
       <pre className="pm-body">
@@ -67,6 +82,7 @@ export default function PostmanDemo() {
           <span className="pm-line" data-set="ok">{'}'}</span>
         </code>
       </pre>
+      <MousePointer2 className="pm-cursor" size={20} fill="currentColor" aria-hidden="true" />
       <p className="pm-note n1">回應直接指出出錯的欄位</p>
       <p className="pm-note n2">修正後重送,確認回傳正常</p>
     </div>

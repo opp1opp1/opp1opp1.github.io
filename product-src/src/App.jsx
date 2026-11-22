@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState, useEffect, useCallback } from
 import { gsap, reduceMotion, fmt } from './motion.js';
 import PostmanDemo, { renderPostman, POSTMAN_DUR } from './PostmanDemo.jsx';
 import E2EDemo, { renderE2E, E2E_DUR } from './E2EDemo.jsx';
+import CaseDemo, { renderCase, CASE_DUR } from './CaseDemo.jsx';
 
 const ADVANTAGES = [
   ['01 · 企業脈絡', '知道系統不是一個人的事', '在企業裡開發系統,要開通防火牆、聯絡 DBA、通過資安弱掃、部署到 IIS 或 K8S,每一關都有人、有規範。我知道該找誰、照什麼流程走,讓系統不只做得出來,還能安全上線。'],
@@ -23,9 +24,10 @@ const SCENES = [
   { id: 'edge', label: '優勢', start: 11, dur: 8 },
   { id: 'debug', label: '驗證', start: 19, dur: 13 },
   { id: 'user', label: '使用者視角', start: 32, dur: 6 },
-  { id: 'stack', label: '延展', start: 38, dur: 7 },
-  { id: 'notes', label: '版本', start: 45, dur: 4 },
-  { id: 'cta', label: '結尾', start: 49, dur: 4 },
+  { id: 'case', label: '案例', start: 38, dur: 23 },
+  { id: 'stack', label: '延展', start: 61, dur: 7 },
+  { id: 'notes', label: '版本', start: 68, dur: 4 },
+  { id: 'cta', label: '結尾', start: 72, dur: 4 },
 ];
 const TOTAL = SCENES[SCENES.length - 1].start + SCENES[SCENES.length - 1].dur;
 
@@ -81,6 +83,15 @@ function buildMaster(root) {
     stagger(tl, '[data-scene="user"] .head', 0.2, 0.15);
     stagger(tl, '.roles li', 1.4, 0.18, 14);
     tl.fromTo('.vs', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7 }, 3);
+  });
+
+  scene('case', tl => {
+    stagger(tl, '[data-scene="case"] .head', 0.2, 0.15);
+    const el = q('[data-demo="case"]');
+    const o = { t: 0 };
+    renderCase(el, 0);
+    tl.fromTo('.chat', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.8)
+      .to(o, { t: CASE_DUR, duration: CASE_DUR, ease: 'none', onUpdate: () => renderCase(el, o.t) }, 0.8);
   });
 
   scene('stack', tl => {
@@ -167,7 +178,7 @@ export default function App() {
       <header className="nav">
         <button className="brand" onClick={() => seek(0)}>謝博旭</button>
         <nav>
-          {SCENES.filter(s => ['edge', 'debug', 'user', 'stack'].includes(s.id)).map(s => (
+          {SCENES.filter(s => ['edge', 'debug', 'case', 'stack'].includes(s.id)).map(s => (
             <button key={s.id} onClick={() => seek(s.start)}>{s.label}</button>
           ))}
           <a href="../">履歷版 →</a>
@@ -227,6 +238,14 @@ export default function App() {
               <p className="tag">我的做法</p>
               <p className="flow"><span>先弄懂對方真正想完成什麼</span><i aria-hidden="true">→</i><span className="grad">一起找出根本的解法</span></p>
             </div>
+          </div>
+        </section>
+
+        <section className="scene" data-scene="case">
+          <div className="in">
+            <p className="eyebrow head">實際案例</p>
+            <h2 className="head">一張發票,背後的真正問題。</h2>
+            <CaseDemo />
           </div>
         </section>
 

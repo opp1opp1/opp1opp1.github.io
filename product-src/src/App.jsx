@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef, useState, useEffect, useCallback } from 'react';
-import { gsap, reduceMotion, fmt } from './motion.js';
+import { gsap, reduceMotion } from './motion.js';
 import { AppWindow, Server, Database, Cloud, Network, ShieldCheck } from 'lucide-react';
 import PostmanDemo, { renderPostman, POSTMAN_DUR } from './PostmanDemo.jsx';
 import E2EDemo, { renderE2E, E2E_DUR } from './E2EDemo.jsx';
@@ -29,7 +29,6 @@ const DEFS = [
 ];
 let acc = 0;
 const SCENES = DEFS.map(([id, label, dur]) => { const s = { id, label, start: acc, dur }; acc += dur; return s; });
-const TOTAL = SCENES[SCENES.length - 1].start + SCENES[SCENES.length - 1].dur;
 
 function buildMaster(root) {
   const q = s => root.querySelector(s);
@@ -158,9 +157,8 @@ function buildMaster(root) {
 export default function App() {
   const root = useRef(null);
   const master = useRef(null);
-  const rangeRef = useRef(null);
-  const timeRef = useRef(null);
-  const resume = useRef(false);
+  const idxRef = useRef(0);
+  const [slide, setSlide] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [ended, setEnded] = useState(false);
 
@@ -169,8 +167,10 @@ export default function App() {
       const m = buildMaster(root.current);
       master.current = m;
       m.eventCallback('onUpdate', () => {
-        if (rangeRef.current) rangeRef.current.value = (m.time() / m.duration()) * 1000;
-        if (timeRef.current) timeRef.current.textContent = fmt(m.time()) + ' / ' + fmt(m.duration());
+        const tt = m.time();
+        let i = 0;
+        SCENES.forEach((sc, k) => { if (tt >= sc.start - 0.001) i = k; });
+        if (i !== idxRef.current) { idxRef.current = i; setSlide(i); }
       });
       m.eventCallback('onComplete', () => { setPlaying(false); setEnded(true); });
       if (!reduceMotion()) { m.play(); setPlaying(true); }
@@ -193,16 +193,30 @@ export default function App() {
     if (!keepState) { m.play(); setPlaying(true); }
   }, []);
 
+  // 投影片換頁:下一頁跳到下一章開頭;上一頁在章節剛開始時回到前一章,否則回到本章開頭
+  const next = useCallback(() => {
+    const m = master.current;
+    const i = Math.min(idxRef.current + 1, SCENES.length - 1);
+    if (idxRef.current === SCENES.length - 1) { m.time(m.duration()); setEnded(true); setPlaying(false); m.pause(); return; }
+    seek(SCENES[i].start);
+  }, [seek]);
+  const prev = useCallback(() => {
+    const m = master.current;
+    const sc = SCENES[idxRef.current];
+    const i = m.time() - sc.start < 1.5 ? Math.max(idxRef.current - 1, 0) : idxRef.current;
+    seek(SCENES[i].start);
+  }, [seek]);
+
   useEffect(() => {
     const key = e => {
       const tag = e.target.tagName;
       if (e.code === 'Space' && tag !== 'BUTTON' && tag !== 'A') { e.preventDefault(); toggle(); }
-      if (e.code === 'ArrowRight') seek(master.current.time() + 5, true);
-      if (e.code === 'ArrowLeft') seek(master.current.time() - 5, true);
+      if (e.code === 'ArrowRight') next();
+      if (e.code === 'ArrowLeft') prev();
     };
     addEventListener('keydown', key);
     return () => { removeEventListener('keydown', key); };
-  }, [toggle, seek]);
+  }, [toggle, next, prev]);
 
   const onStageClick = e => { if (!e.target.closest('a,button')) toggle(); };
 
@@ -372,22 +386,18 @@ export default function App() {
         </section>
       </main>
 
-      <div className="player" role="group" aria-label="播放控制">
+      <div className="player" role="group" aria-label="投影片控制">
+        <button className="pbtn ghost" onClick={prev} aria-label="上一頁">‹</button>
         <button className="pbtn" onClick={toggle} aria-label={ended ? '重新播放' : playing ? '暫停' : '播放'}>
           {ended ? '↺' : playing ? '❚❚' : '▶'}
         </button>
-        <div className="track">
-          <input ref={rangeRef} type="range" min="0" max="1000" step="1" defaultValue="0" aria-label="播放進度"
-            onPointerDown={() => { resume.current = !master.current.paused(); master.current.pause(); }}
-            onInput={e => seek((e.target.value / 1000) * TOTAL, true)}
-            onPointerUp={() => { if (resume.current && master.current.progress() < 1) { master.current.play(); setPlaying(true); } else setPlaying(false); }}
-            onKeyDown={e => e.stopPropagation()} />
-          {SCENES.slice(1).map(s => (
-            <button key={s.id} className="tick" style={{ left: (s.start / TOTAL) * 100 + '%' }} title={s.label}
-              onClick={() => seek(s.start)} aria-label={'跳到' + s.label} />
+        <button className="pbtn ghost" onClick={next} aria-label="下一頁">›</button>
+        <div className="dots" role="tablist" aria-label="頁面">
+          {SCENES.map((sc, i) => (
+            <button key={sc.id} role="tab" aria-selected={i === slide} aria-label={sc.label} title={sc.label}
+              className={'dotn' + (i === slide ? ' on' : '')} onClick={() => seek(sc.start)} />
           ))}
         </div>
-        <span className="ptime" ref={timeRef}>0:00 / {fmt(TOTAL)}</span>
       </div>
     </div>
   );

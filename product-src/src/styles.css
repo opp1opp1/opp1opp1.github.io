@@ -180,3 +180,85 @@ footer { text-align: center; color: var(--muted); font-size: 14px; padding: 32px
 
 @media (max-width: 900px) { .demos { grid-template-columns: 1fr; } }
 @media (max-width: 480px) { .win { font-size: 12px; } .pm-send { display: none; } }
+
+/* ---------- 影片播放模式 ---------- */
+html, body { height: 100%; overflow: hidden; }
+.stage { position: fixed; inset: 0; z-index: 1; overflow: hidden; }
+.stage .scene { position: absolute; inset: 0; max-width: none; margin: 0; padding: 64px 24px 84px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 0; }
+.stage .scene.hero { min-height: 0; text-align: center; }
+.stage .in { width: 100%; max-width: 1080px; }
+.stage .merge, .stage .ba { padding: 0; height: auto; }
+.stage .merge-stage, .stage .ba-stage { width: 100%; height: 100%; }
+.stage .head, .stage .fx { will-change: transform, opacity; }
+.stage h2 { margin-bottom: 4px; }
+.stage .band-lead { margin: 12px 0 28px; }
+.stage .cards { gap: 16px; }
+.stage .pcard { padding: 22px; }
+.stage .pcard:hover { transform: none; }
+.stage .demos { margin-top: 24px; }
+.stage .roles { margin-bottom: 36px; }
+.stage .rel { margin-top: 28px; }
+.stage .cta .foot { margin-top: 56px; color: var(--muted); font-size: 14px; }
+.stage .cta p { margin-top: 32px; }
+.stage .cta .foot { margin-top: 56px; }
+
+.nav { position: fixed; top: 0; left: 0; right: 0; }
+.nav button { font: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+.nav .brand { color: var(--text); font-weight: 700; letter-spacing: .06em; font-size: 17px; }
+.nav nav { display: flex; gap: 22px; align-items: center; }
+.nav nav button, .nav nav a { color: var(--muted); font-size: 14px; }
+.nav nav button:hover { color: var(--text); }
+
+.player {
+  position: fixed; z-index: 30; left: 50%; bottom: 18px; transform: translateX(-50%);
+  width: min(720px, calc(100% - 32px)); display: flex; align-items: center; gap: 14px;
+  padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line);
+  background: rgb(17 21 26 / .8); backdrop-filter: blur(14px);
+}
+.pbtn { flex: none; width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer; background: var(--text); color: var(--bg); font-size: 13px; display: grid; place-items: center; }
+.pbtn:hover { transform: scale(1.08); }
+.track { position: relative; flex: 1; min-width: 0; height: 24px; display: flex; align-items: center; }
+.track input[type=range] { width: 100%; margin: 0; background: transparent; -webkit-appearance: none; appearance: none; height: 24px; cursor: pointer; position: relative; z-index: 2; }
+.track input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--line); }
+.track input[type=range]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--line); }
+.track input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 50%; background: var(--a); border: 0; }
+.track input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--a); border: 0; }
+.tick { position: absolute; top: 50%; width: 2px; height: 10px; margin: -5px 0 0 -1px; padding: 0; border: 0; background: var(--muted); opacity: .6; z-index: 1; cursor: pointer; pointer-events: none; }
+.ptime { flex: none; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; min-width: 82px; text-align: right; }
+
+.stage .demos { grid-template-columns: 1fr 1fr; }
+.stage .win { min-height: 0; }
+
+@media (max-width: 900px) {
+  .stage .demos { grid-template-columns: 1fr; gap: 12px; }
+  .stage .demo-cap { display: none; }
+  .stage .win { font-size: 11px; }
+  .stage .pm-body { min-height: 0; padding: 8px 14px; }
+  .stage .pm-note { position: static; margin: 0 14px 10px; }
+  .stage .t-row { padding: 2px 0; }
+  .stage .scene { padding: 60px 16px 80px; }
+}
+@media (max-width: 760px) {
+  .nav nav button { display: none; }
+  .stage .cards { grid-template-columns: 1fr; gap: 10px; }
+  .stage .pcard { padding: 14px 16px; }
+  .stage .pcard h3 { font-size: 17px; margin: 2px 0 4px; }
+  .stage .pcard p { font-size: 13px; line-height: 1.55; margin-bottom: 0; }
+  .stage .band-lead { margin: 8px 0 16px; font-size: 15px; }
+  .ptime { display: none; }
+  .stage .rel li { padding: 14px 0; }
+}
+
+@media (max-width: 760px) {
+  .stage [data-scene="debug"] .eyebrow { display: none; }
+  .stage [data-scene="debug"] h2 { font-size: 21px; margin-bottom: 0; }
+  .stage [data-scene="debug"] .demos { margin-top: 12px; }
+  .stage .pm-tabs span:not(.on) { display: none; }
+  .stage .pm-req { padding: 10px 12px; }
+  .stage .pm-body { padding: 6px 12px; line-height: 1.5; }
+  .stage .pm-note { font-size: 12px; padding: 5px 10px; margin: 0 12px 8px; }
+  .stage .t-cmd { padding: 8px 14px 2px; }
+  .stage .t-summary { margin-top: 6px; padding: 6px 12px; }
+  .stage [data-scene="edge"] .band-lead { display: none; }
+  .stage [data-scene="edge"] h2 { font-size: 24px; margin-bottom: 14px; }
+}

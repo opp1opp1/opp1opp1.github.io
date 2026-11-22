@@ -4,6 +4,7 @@ import PostmanDemo, { renderPostman, POSTMAN_DUR } from './PostmanDemo.jsx';
 import E2EDemo, { renderE2E, E2E_DUR } from './E2EDemo.jsx';
 import CaseDemo, { renderCase, CASE_DUR } from './CaseDemo.jsx';
 import Case2Demo, { renderCase2, CASE2_DUR } from './Case2Demo.jsx';
+import Case3Demo, { renderCase3, CASE3_DUR } from './Case3Demo.jsx';
 
 const ADVANTAGES = [
   ['01 · 企業脈絡', '知道系統不是一個人的事', '在企業裡開發系統,要開通防火牆、聯絡 DBA、通過資安弱掃、部署到 IIS 或 K8S,每一關都有人、有規範。我知道該找誰、照什麼流程走,讓系統不只做得出來,還能安全上線。'],
@@ -27,9 +28,10 @@ const SCENES = [
   { id: 'user', label: '使用者視角', start: 32, dur: 6 },
   { id: 'case', label: '案例一', start: 38, dur: 31 },
   { id: 'case2', label: '案例二', start: 69, dur: 30 },
-  { id: 'stack', label: '延展', start: 99, dur: 7 },
-  { id: 'notes', label: '版本', start: 106, dur: 4 },
-  { id: 'cta', label: '結尾', start: 110, dur: 4 },
+  { id: 'case3', label: '案例三', start: 99, dur: 28 },
+  { id: 'stack', label: '延展', start: 127, dur: 7 },
+  { id: 'notes', label: '版本', start: 134, dur: 4 },
+  { id: 'cta', label: '結尾', start: 138, dur: 4 },
 ];
 const TOTAL = SCENES[SCENES.length - 1].start + SCENES[SCENES.length - 1].dur;
 
@@ -103,6 +105,15 @@ function buildMaster(root) {
     renderCase2(el, 0);
     tl.fromTo('[data-scene="case2"] .chat', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.8)
       .to(o, { t: CASE2_DUR, duration: CASE2_DUR, ease: 'none', onUpdate: () => renderCase2(el, o.t) }, 0.8);
+  });
+
+  scene('case3', tl => {
+    stagger(tl, '[data-scene="case3"] .head', 0.2, 0.15);
+    const el = q('[data-demo="case3"]');
+    const o = { t: 0 };
+    renderCase3(el, 0);
+    tl.fromTo('[data-scene="case3"] .c3-stage', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.8)
+      .to(o, { t: CASE3_DUR, duration: CASE3_DUR, ease: 'none', onUpdate: () => renderCase3(el, o.t) }, 0.8);
   });
 
   scene('stack', tl => {
@@ -189,7 +200,7 @@ export default function App() {
       <header className="nav">
         <button className="brand" onClick={() => seek(0)}>謝博旭</button>
         <nav>
-          {SCENES.filter(s => ['edge', 'debug', 'case', 'case2', 'stack'].includes(s.id)).map(s => (
+          {SCENES.filter(s => ['edge', 'debug', 'case', 'case2', 'case3', 'stack'].includes(s.id)).map(s => (
             <button key={s.id} onClick={() => seek(s.start)}>{s.label}</button>
           ))}
           <a href="../">履歷版 →</a>
@@ -265,6 +276,14 @@ export default function App() {
             <p className="eyebrow head">實際案例 二</p>
             <h2 className="head">地圖不見了,原因在 F12 裡。</h2>
             <Case2Demo />
+          </div>
+        </section>
+
+        <section className="scene" data-scene="case3">
+          <div className="in">
+            <p className="eyebrow head">實際案例 三</p>
+            <h2 className="head">每天的工時回報,交給 AI。</h2>
+            <Case3Demo />
           </div>
         </section>
 

@@ -26,10 +26,10 @@ const SCENES = [
   { id: 'debug', label: '驗證', start: 19, dur: 13 },
   { id: 'user', label: '使用者視角', start: 32, dur: 6 },
   { id: 'case', label: '案例一', start: 38, dur: 31 },
-  { id: 'case2', label: '案例二', start: 69, dur: 27 },
-  { id: 'stack', label: '延展', start: 96, dur: 7 },
-  { id: 'notes', label: '版本', start: 103, dur: 4 },
-  { id: 'cta', label: '結尾', start: 107, dur: 4 },
+  { id: 'case2', label: '案例二', start: 69, dur: 30 },
+  { id: 'stack', label: '延展', start: 99, dur: 7 },
+  { id: 'notes', label: '版本', start: 106, dur: 4 },
+  { id: 'cta', label: '結尾', start: 110, dur: 4 },
 ];
 const TOTAL = SCENES[SCENES.length - 1].start + SCENES[SCENES.length - 1].dur;
 

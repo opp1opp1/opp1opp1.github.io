@@ -17,7 +17,7 @@ export const MSGS2 = [
   ['sys', '一天後', 20.6],
   ['it', '我在請求的 Header 補上來源資訊了,再看看地圖。', 22.0],
   ['them', '地圖回來了,謝謝!', 24.0],
-  ['sys', '這次只補上來源資訊,其餘項目還沒有完全符合規範,但已能先正常使用', 25.6],
+  ['sys', '現任 IT 沒有改用 HTTPS。我只提供建議,不強制對方怎麼做,畢竟這已經不是我的系統了', 25.6],
 ];
 
 const CAPS2 = [
@@ -27,7 +27,7 @@ const CAPS2 = [
   [9.0, 'F12 的訊息很籠統:只知道是哪個網站、說我們不符合規範,沒說差在哪。'],
   [11.0, '所以我再去對照他們的使用規範,查出我們的呼叫差多少。'],
   [17.2, '把可能的原因與替代方案都列給現任 IT,讓他有選擇。'],
-  [22.0, '一天後補上來源資訊,地圖恢復。其餘項目尚未完全符合,但已經能先使用。'],
+  [22.0, '一天後補上來源資訊,地圖恢復。HTTPS 沒有調整:我只提供建議,畢竟這已經不是我的系統。'],
 ];
 
 const COMPARE = [
@@ -75,7 +75,7 @@ export function renderCase2(root, t) {
     r.style.opacity = ramp(t, start, start + 0.3);
     const fixed = i === 2 && t >= 22.4;
     const st = r.querySelector('.st');
-    st.textContent = fixed ? '✓ 已補上' : (i === 2 ? '✕ ' : '⚠ ') + COMPARE[i][2];
+    st.textContent = fixed ? '✓ 已補上' : (i === 1 && t >= 22.4 ? '⚠ 未調整' : (i === 2 ? '✕ ' : '⚠ ') + COMPARE[i][2]);
     st.className = 'st ' + (fixed ? 'good' : 'warn');
   });
   const sum = dev.querySelector('.cmp-sum');
@@ -121,7 +121,7 @@ export default function Case2Demo() {
               ))}
             </tbody>
           </table>
-          <p className="cmp-sum" style={{ opacity: 0 }}>地圖已恢復 · 其餘項目仍待改善</p>
+          <p className="cmp-sum" style={{ opacity: 0 }}>地圖已恢復 · 其餘項目由現任 IT 決定</p>
         </div>
         <p className="case-cap" aria-live="off" />
       </div>

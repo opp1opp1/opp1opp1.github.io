@@ -7,8 +7,8 @@ import './skill-stage.css';
 const LINES = [
   { text: 'name: 查詢單據', chip: null },
   { text: 'allow:   SELECT', chip: ['直接執行', 'ok'] },
-  { text: 'consent: INSERT', chip: ['需使用者同意', 'warn'] },
-  { text: 'deny:    UPDATE · DELETE · DROP', chip: ['禁止', 'bad'] },
+  { text: 'consent: INSERT · UPDATE', chip: ['需使用者同意', 'warn'] },
+  { text: 'others:  全部過濾', chip: ['寫的時候就擋掉', 'bad'] },
   { text: 'account: AI 專用帳號', chip: ['權限低於一般使用者', 'info'] },
 ] as const;
 const FULL = LINES.map((l) => l.text).join('\n');

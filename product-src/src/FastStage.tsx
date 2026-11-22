@@ -170,7 +170,7 @@ export default function FastStage() {
                   <div className="fs-db">
                     <div className="fs-db-head">
                       <span>資料庫 · 請購單</span>
-                      <span className="fs-db-auth" data-on={s.auth || undefined}>{s.auth ? '僅 SELECT ✓' : '確認權限…'}</span>
+                      <span className="fs-db-auth" data-on={s.auth || undefined}>{s.auth ? 'SELECT ✓' : '確認權限…'}</span>
                     </div>
                     {[0, 1, 2].map((i) => (
                       <div className="fs-db-row" key={i} data-scan={s.scan === i || undefined} data-hit={(i === 2 && s.hit) || undefined}>

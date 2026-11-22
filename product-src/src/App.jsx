@@ -1,8 +1,6 @@
 import React, { useLayoutEffect, useRef, useState, useEffect, useCallback } from 'react';
 import { gsap, reduceMotion } from './motion.js';
 import { AppWindow, Server, Database, Cloud, Network, ShieldCheck } from 'lucide-react';
-import PostmanDemo, { renderPostman, POSTMAN_DUR } from './PostmanDemo.jsx';
-import E2EDemo, { renderE2E, E2E_DUR } from './E2EDemo.jsx';
 import CaseDemo, { renderCase, CASE_DUR } from './CaseDemo.jsx';
 import Case2Demo, { renderCase2, CASE2_DUR } from './Case2Demo.jsx';
 import Case3Demo, { renderCase3, CASE3_DUR } from './Case3Demo.jsx';
@@ -10,6 +8,7 @@ import Case4Demo, { renderCase4, CASE4_DUR } from './Case4Demo.jsx';
 import { Edge1Demo, SecDemo, AiDemo, renderG1, renderSec, renderAi, G1_DUR, SEC_DUR, AI_DUR } from './EdgeDemos.jsx';
 import FastStage from './FastStage.tsx';
 import SkillStage from './SkillStage.tsx';
+import DebugStage from './DebugStage.tsx';
 
 // 圖示一律來自同一套圖示庫(lucide),統一尺寸與線寬
 const CORE = [['前端', AppWindow], ['後端', Server]];
@@ -25,12 +24,13 @@ const RELEASES = [
 // 只需要設定每章的長度,開始時間自動累加
 const DEFS = [
   ['hero', '開場', 9], ['merge', '融合', 8],
-  ['edge', '優勢', 11], ['sec', '資安', 11], ['debug', '驗證', 15], ['skill', 'SKILL', 15], ['fast', '交付', 22], ['ai', 'AI', 13],
+  ['edge', '優勢', 11], ['sec', '資安', 11], ['debug', '驗證', 26], ['skill', 'SKILL', 15], ['fast', '交付', 22], ['ai', 'AI', 13],
   ['user', '使用者視角', 8], ['case', '案例一', 31], ['case2', '案例二', 30],
   ['case3', '案例三', 30], ['case4', '案例四', 29], ['stack', '延展', 9], ['notes', '版本', 6], ['cta', '結尾', 4],
 ];
 const FAST_IDX = DEFS.findIndex(d => d[0] === 'fast');
 const SKILL_IDX = DEFS.findIndex(d => d[0] === 'skill');
+const DEBUG_IDX = DEFS.findIndex(d => d[0] === 'debug');
 let acc = 0;
 const SCENES = DEFS.map(([id, label, dur]) => { const s = { id, label, start: acc, dur }; acc += dur; return s; });
 
@@ -93,14 +93,18 @@ function buildMaster(root) {
   demoScene('ai', '[data-demo="ai"]', renderAi, AI_DUR);
 
   scene('debug', tl => {
-    stagger(tl, '[data-scene="debug"] .head', 0.3, 0.15);
-    stagger(tl, '[data-scene="debug"] .demo', 1, 0.3, 30);
-    const pm = q('[data-demo="postman"]'), e2e = q('[data-demo="e2e"]');
-    const o1 = { t: 0 }, o2 = { t: 0 };
-    renderPostman(pm, 0); renderE2E(e2e, 0);
-    tl.to(o1, { t: POSTMAN_DUR, duration: POSTMAN_DUR, ease: 'none', onUpdate: () => renderPostman(pm, o1.t) }, 1.8)
-      .to(o2, { t: E2E_DUR, duration: E2E_DUR, ease: 'none', onUpdate: () => renderE2E(e2e, o2.t) }, 2.4);
+    stagger(tl, '[data-scene="debug"] .head', 0.2, 0.15);
+    tl.fromTo('[data-scene="debug"] .gx', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.6);
   });
+  scene('skill', tl => {
+    stagger(tl, '[data-scene="skill"] .head', 0.2, 0.15);
+    tl.fromTo('[data-scene="skill"] .gx', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.6);
+  });
+  scene('fast', tl => {
+    stagger(tl, '[data-scene="fast"] .head', 0.2, 0.15);
+    tl.fromTo('[data-scene="fast"] .gx', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.6);
+  });
+  demoScene('ai', '[data-demo="ai"]', renderAi, AI_DUR);
 
   scene('user', tl => {
     stagger(tl, '[data-scene="user"] .head', 0.2, 0.15);
@@ -299,10 +303,7 @@ export default function App() {
             <p className="eyebrow head">我的優勢</p>
             <h2 className="head">出問題,自己查得到</h2>
             <p className="band-lead head">看 Log、F12、Postman 逐步縮小範圍;用 AI 開發,也請 AI 寫測試、跑 E2E,用結果說話。</p>
-            <div className="demos">
-              <div className="demo"><PostmanDemo /><p className="demo-cap">用 API 工具重現問題,看回應定位原因</p></div>
-              <div className="demo"><E2EDemo /><p className="demo-cap">請 AI 寫測試、跑 E2E,用綠燈驗證</p></div>
-            </div>
+            <div className="gx fs-wrap">{slide === DEBUG_IDX && <DebugStage key={run} />}</div>
           </div>
         </section>
 
@@ -310,7 +311,7 @@ export default function App() {
           <div className="in">
             <p className="eyebrow head">我的優勢</p>
             <h2 className="head">把查詢做成有護欄的 SKILL</h2>
-            <p className="band-lead head">我與 AI 一起寫出這個 SKILL,並在寫的時候就設好界線:只能查詢,寫入要經過同意,而且 AI 用的是權限較低的專用帳號。</p>
+            <p className="band-lead head">我與 AI 一起寫出這個 SKILL,並在寫的時候就設好界線:查詢直接執行,新增與修改要經過同意,其他指令直接過濾掉,而且 AI 用的是權限較低的專用帳號。</p>
             <div className="gx fs-wrap">{slide === SKILL_IDX && <SkillStage key={run} />}</div>
           </div>
         </section>

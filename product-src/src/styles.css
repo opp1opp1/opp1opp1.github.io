@@ -379,3 +379,11 @@ html, body { height: 100%; overflow: hidden; }
   .stage [data-scene="case3"] .eyebrow { display: none; }
   .stage [data-scene="case3"] h2 { font-size: 20px; }
 }
+
+.c3-expire { position: absolute; left: 0; right: 0; top: 40px; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: rgb(7 9 12 / .82); backdrop-filter: blur(2px); z-index: 3; }
+.c3-expire .sp { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--a); }
+.c3-expire p { margin: 0; font-family: "Noto Sans TC", sans-serif; }
+.ex-msg { font-size: 16px; font-weight: 500; }
+.ex-msg.bad { color: #ff9a9a; }
+.ex-n { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+@media (max-width: 760px) { .c3-expire .sp { width: 26px; height: 26px; } .ex-msg { font-size: 14px; } }

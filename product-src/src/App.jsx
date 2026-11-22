@@ -317,7 +317,7 @@ export default function App() {
           <div className="in">
             <p className="eyebrow head">我的優勢</p>
             <h2 className="head">測試全部通過,不代表沒問題</h2>
-            <p className="band-lead head">測試全過、上線卻出問題,這種事很常見。所以我讓 AI 實際把程式跑起來、取得登入狀態,操作它剛改的部分。</p>
+            <p className="band-lead head">測試全過、上線卻出問題,這種事很常見。所以我讓 AI 實際把程式跑起來,透過 SKILL 取得登入狀態(AI 碰不到帳號密碼),操作它剛改的部分。</p>
             <div className="gx fs-wrap">{slide === E2E_IDX && <E2eStage key={run} />}</div>
           </div>
         </section>

@@ -3,13 +3,14 @@ import { useSiteTheme } from './useSiteTheme.js';
 import './e2e-stage.css';
 
 // 示意:測試全部通過,上線卻出問題,所以讓 AI 實際把程式跑起來、取得登入狀態,操作它剛改的部分。
-// 登入的做法:起一個橋接伺服器,把 SESSION 複製到要測試的 PORT(以 SKILL 讓 AI 調用)。
+// 登入的做法:以 SKILL 讓 AI 取得登入狀態。橋接伺服器讀一份 JSON(各個角色的 profile),把 SESSION 複製到要測試的 PORT;
+// AI 不接觸帳號密碼(撰寫時也只知道結構),只知道目前登入的角色與可能的權限。角色名稱為示意。
 // 頁面內容、欄位與「發現的問題」皆為示意,不是真實系統。
 
 const ROWS = [
   { label: '讀取剛改的內容', tag: '請購單 · 供應商欄位' },
   { label: '啟動程式', tag: 'localhost:3000' },
-  { label: 'SKILL · 橋接 SESSION', tag: '複製到 :3000' },
+  { label: 'SKILL · 取得登入狀態', tag: '角色:請購人 · 不經手帳密' },
   { label: '操作畫面', tag: '新增請購單 → 送出' },
   { label: '發現問題', tag: '送出後供應商是空的' },
 ];
@@ -97,6 +98,7 @@ export default function E2eStage() {
                 <span className="ev-btn ev-btn--off">登入</span>
               </div>
             )}
+            {s.view !== 'login' && <span className="ev-role"><i />請購人</span>}
             {s.view === 'form' && (
               <div className="ev-form">
                 <Text className="ev-h">新增請購單</Text>

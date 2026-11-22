@@ -34,6 +34,11 @@
 .ev-k { font-size: 13.5px; width: 52px; }
 .ev-v { font-size: 14px; font-weight: 600; }
 .ev-kv--bad[data-bad] .ev-v { color: var(--ss-danger-text); }
+/* 目前登入的角色(取得登入狀態後出現) */
+.ev-role { position: absolute; right: 14px; top: 10px; z-index: 3; display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 8px; border-radius: 999px; background: var(--ss-accent-soft); color: var(--ss-accent); font-size: 12.5px; font-weight: 600; animation: ev-role-in .35s both; }
+.ev-role i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+@keyframes ev-role-in { from { opacity: 0; transform: translateY(-4px); } }
+.ev .ss-window__body { position: relative; }
 /* 手機:上下疊 */
 .ev .ss-stage[data-layout="compact"] .ev-log { left: -12px; top: 8px; width: 382px; height: 226px; }
 .ev .ss-stage[data-layout="compact"] .ev-app { left: 18px; top: 212px; width: 350px; height: 340px; }

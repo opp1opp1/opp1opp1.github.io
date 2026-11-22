@@ -6,12 +6,21 @@ import CaseDemo, { renderCase, CASE_DUR } from './CaseDemo.jsx';
 import Case2Demo, { renderCase2, CASE2_DUR } from './Case2Demo.jsx';
 import Case3Demo, { renderCase3, CASE3_DUR } from './Case3Demo.jsx';
 import Case4Demo, { renderCase4, CASE4_DUR } from './Case4Demo.jsx';
+import Edge2Demo, { renderEdge2, EDGE2_DUR } from './Edge2Demo.jsx';
 
 const ADVANTAGES = [
   ['01 · 企業脈絡', '知道系統不是一個人的事', '在企業裡開發系統,要開通防火牆、聯絡 DBA、通過資安弱掃、部署到 IIS 或 K8S,每一關都有人、有規範。我知道該找誰、照什麼流程走,讓系統不只做得出來,還能安全上線。'],
   ['02 · 資安意識', '知道什麼該守住', '哪些資料不該送出去、哪些權限不能開,這些常識讓我在享受 AI 速度的同時,也能守住企業的底線。'],
   ['03 · 除錯與驗證', '出問題,自己查得到', '看 Log、F12 開發者工具、Postman 逐步縮小範圍。用 AI 開發,也請 AI 寫測試、指示它跑 E2E 測試,用結果說話,而不是憑感覺。'],
   ['04 · 交付效率', '更快把問題解決', '善用 AI 提高需求交付與問題處理的效率,把省下來的時間,拿去思考真正值得解決的問題。'],
+];
+const STACK_ICONS = [
+  ['前端', '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M6.5 6.5h.01"/>'],
+  ['後端', '<rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/>'],
+  ['資料庫', '<ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'],
+  ['雲端', '<path d="M7 18a4 4 0 010-8 5.5 5.5 0 0110.6 1.5A3.3 3.3 0 0117 18z"/>'],
+  ['網路', '<circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M11 7l-5 9M13 7l5 9M7.2 18h9.6"/>'],
+  ['資安', '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'],
 ];
 const STACK = ['.NET', 'ASP.NET MVC', 'jQuery', 'Oracle', 'Python', 'Vue.js', 'LangChain'];
 const RELEASES = [
@@ -21,20 +30,14 @@ const RELEASES = [
 ];
 
 // 影片章節:id 對應 <section data-scene>,start 為開始秒數,dur 為長度
-const SCENES = [
-  { id: 'hero', label: '開場', start: 0, dur: 5 },
-  { id: 'merge', label: '融合', start: 5, dur: 6 },
-  { id: 'edge', label: '優勢', start: 11, dur: 8 },
-  { id: 'debug', label: '驗證', start: 19, dur: 13 },
-  { id: 'user', label: '使用者視角', start: 32, dur: 6 },
-  { id: 'case', label: '案例一', start: 38, dur: 31 },
-  { id: 'case2', label: '案例二', start: 69, dur: 30 },
-  { id: 'case3', label: '案例三', start: 99, dur: 28 },
-  { id: 'case4', label: '案例四', start: 127, dur: 29 },
-  { id: 'stack', label: '延展', start: 156, dur: 7 },
-  { id: 'notes', label: '版本', start: 163, dur: 4 },
-  { id: 'cta', label: '結尾', start: 167, dur: 4 },
+// 只需要設定每章的長度,開始時間自動累加
+const DEFS = [
+  ['hero', '開場', 7], ['merge', '融合', 6], ['edge', '優勢', 8], ['edge2', '底線', 15],
+  ['debug', '驗證', 13], ['user', '使用者視角', 6], ['case', '案例一', 31], ['case2', '案例二', 30],
+  ['case3', '案例三', 28], ['case4', '案例四', 29], ['stack', '延展', 7], ['notes', '版本', 4], ['cta', '結尾', 4],
 ];
+let acc = 0;
+const SCENES = DEFS.map(([id, label, dur]) => { const s = { id, label, start: acc, dur }; acc += dur; return s; });
 const TOTAL = SCENES[SCENES.length - 1].start + SCENES[SCENES.length - 1].dur;
 
 function buildMaster(root) {
@@ -59,6 +62,8 @@ function buildMaster(root) {
   scene('hero', tl => {
     tl.from(qa('.split'), { yPercent: 110, duration: 1.1, ease: 'power4.out', stagger: 0.15 }, 0.2);
     stagger(tl, '.hero .fx', 0.9, 0.15, 20);
+    tl.fromTo(qa('.si'), { y: 24, opacity: 0, scale: 0.7 }, { y: 0, opacity: 1, scale: 1, duration: 0.55, ease: 'back.out(2.2)', stagger: 0.2 }, 3.0)
+      .fromTo('.si-note', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.7 }, 4.7);
   });
 
   scene('merge', tl => {
@@ -73,6 +78,15 @@ function buildMaster(root) {
   scene('edge', tl => {
     stagger(tl, '[data-scene="edge"] .head', 0.3, 0.15);
     stagger(tl, '[data-scene="edge"] .pcard', 1.2, 0.5, 30);
+  });
+
+  scene('edge2', tl => {
+    stagger(tl, '[data-scene="edge2"] .head', 0.2, 0.15);
+    const el = q('[data-demo="edge2"]');
+    const o = { t: 0 };
+    renderEdge2(el, 0);
+    tl.fromTo('[data-scene="edge2"] .e2p', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6, stagger: 0.15 }, 0.8)
+      .to(o, { t: EDGE2_DUR, duration: EDGE2_DUR, ease: 'none', onUpdate: () => renderEdge2(el, o.t) }, 1.0);
   });
 
   scene('debug', tl => {
@@ -227,6 +241,15 @@ export default function App() {
           </h1>
           <p className="hero-sub fx">一位懂企業怎麼運作,也懂怎麼用 AI 的工程師。</p>
           <p className="hero-name fx">謝博旭 Bosh Shieh · 全端工程師</p>
+          <ul className="si-row" aria-label="全端涵蓋的範圍">
+            {STACK_ICONS.map(([label, d]) => (
+              <li className="si" key={label}>
+                <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML={{ __html: d }} />
+                <span>{label}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="si-note">從畫面到資料庫、雲端、網路與資安,需要時都能自己處理。</p>
         </section>
 
         <section className="scene merge" data-scene="merge">
@@ -247,6 +270,14 @@ export default function App() {
                 <article className="pcard" key={tag}><p className="tag">{tag}</p><h3>{title}</h3><p>{text}</p></article>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="scene" data-scene="edge2">
+          <div className="in">
+            <p className="eyebrow head">我的優勢</p>
+            <h2 className="head">守住底線,也跑得更快。</h2>
+            <Edge2Demo />
           </div>
         </section>
 

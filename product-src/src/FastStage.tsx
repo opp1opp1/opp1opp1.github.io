@@ -162,7 +162,7 @@ export default function FastStage() {
                 <Collapse open={s.phase === 'tool' || s.phase === 'answer'}>
                   <div className="fs-tool">
                     <span className="fs-tool-name">SKILL · 查詢單據</span>
-                    <span className="fs-tool-tag">權限控制</span>
+                    <span className="fs-tool-tag">AI 專用帳號</span>
                     <span className="fs-tool-state" data-done={s.phase === 'answer' || undefined}>{s.phase === 'answer' ? '完成' : '查詢中…'}</span>
                   </div>
                 </Collapse>
@@ -170,7 +170,7 @@ export default function FastStage() {
                   <div className="fs-db">
                     <div className="fs-db-head">
                       <span>資料庫 · 請購單</span>
-                      <span className="fs-db-auth" data-on={s.auth || undefined}>{s.auth ? '權限檢查 ✓' : '權限檢查…'}</span>
+                      <span className="fs-db-auth" data-on={s.auth || undefined}>{s.auth ? '僅 SELECT ✓' : '確認權限…'}</span>
                     </div>
                     {[0, 1, 2].map((i) => (
                       <div className="fs-db-row" key={i} data-scan={s.scan === i || undefined} data-hit={(i === 2 && s.hit) || undefined}>

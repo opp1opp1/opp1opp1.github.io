@@ -9,6 +9,7 @@ import Case3Demo, { renderCase3, CASE3_DUR } from './Case3Demo.jsx';
 import Case4Demo, { renderCase4, CASE4_DUR } from './Case4Demo.jsx';
 import { Edge1Demo, SecDemo, AiDemo, renderG1, renderSec, renderAi, G1_DUR, SEC_DUR, AI_DUR } from './EdgeDemos.jsx';
 import FastStage from './FastStage.tsx';
+import SkillStage from './SkillStage.tsx';
 
 // 圖示一律來自同一套圖示庫(lucide),統一尺寸與線寬
 const CORE = [['前端', AppWindow], ['後端', Server]];
@@ -24,11 +25,12 @@ const RELEASES = [
 // 只需要設定每章的長度,開始時間自動累加
 const DEFS = [
   ['hero', '開場', 9], ['merge', '融合', 8],
-  ['edge', '優勢', 11], ['sec', '資安', 11], ['debug', '驗證', 15], ['fast', '交付', 22], ['ai', 'AI', 13],
+  ['edge', '優勢', 11], ['sec', '資安', 11], ['debug', '驗證', 15], ['skill', 'SKILL', 15], ['fast', '交付', 22], ['ai', 'AI', 13],
   ['user', '使用者視角', 8], ['case', '案例一', 31], ['case2', '案例二', 30],
   ['case3', '案例三', 30], ['case4', '案例四', 29], ['stack', '延展', 9], ['notes', '版本', 6], ['cta', '結尾', 4],
 ];
 const FAST_IDX = DEFS.findIndex(d => d[0] === 'fast');
+const SKILL_IDX = DEFS.findIndex(d => d[0] === 'skill');
 let acc = 0;
 const SCENES = DEFS.map(([id, label, dur]) => { const s = { id, label, start: acc, dur }; acc += dur; return s; });
 
@@ -80,6 +82,10 @@ function buildMaster(root) {
   });
   demoScene('edge', '[data-demo="edge1"]', renderG1, G1_DUR);
   demoScene('sec', '[data-demo="sec"]', renderSec, SEC_DUR);
+  scene('skill', tl => {
+    stagger(tl, '[data-scene="skill"] .head', 0.2, 0.15);
+    tl.fromTo('[data-scene="skill"] .gx', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.6);
+  });
   scene('fast', tl => {
     stagger(tl, '[data-scene="fast"] .head', 0.2, 0.15);
     tl.fromTo('[data-scene="fast"] .gx', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.6 }, 0.6);
@@ -300,11 +306,20 @@ export default function App() {
           </div>
         </section>
 
+        <section className="scene" data-scene="skill">
+          <div className="in">
+            <p className="eyebrow head">我的優勢</p>
+            <h2 className="head">把查詢做成有護欄的 SKILL</h2>
+            <p className="band-lead head">我與 AI 一起寫出這個 SKILL,並在寫的時候就設好界線:只能查詢,寫入要經過同意,而且 AI 用的是權限較低的專用帳號。</p>
+            <div className="gx fs-wrap">{slide === SKILL_IDX && <SkillStage key={run} />}</div>
+          </div>
+        </section>
+
         <section className="scene" data-scene="fast">
           <div className="in">
             <p className="eyebrow head">我的優勢</p>
-            <h2 className="head">更快把問題解決</h2>
-            <p className="band-lead head">善用 AI 提高需求交付與問題處理的效率,把省下來的時間,拿去思考真正值得解決的問題。</p>
+            <h2 className="head">貼上原話,AI 直接查</h2>
+            <p className="band-lead head">有了這個 SKILL,把使用者的原話貼給 AI,它就能在界線內直接查出狀況。</p>
             <div className="gx fs-wrap">{slide === FAST_IDX && <FastStage key={run} />}</div>
           </div>
         </section>
